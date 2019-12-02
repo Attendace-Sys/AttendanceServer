@@ -1,0 +1,68 @@
+<div [hidden]="!notificationService.isShow" class="content">
+  <div *ngIf="notificationService.isShowProgress" class="progress">
+    <div [style.width.%]="notificationService.progress" [ngClass]="{
+      'bg-success' : !notificationService.isError,
+      'bg-danger' : notificationService.isError
+    }" class="progress-bar progress-bar-striped progress-bar-animated"></div>
+  </div>
+
+  <div id="notification-modal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title">
+            <span *ngIf="!notificationService.isError" class="text-success font-weight-bold">
+              Success <i class="fas fa-check"> </i>
+            </span>
+            <span *ngIf="notificationService.isError" class="text-danger font-weight-bold">
+              <i class="fas fa-exclamation-triangle"></i> Error
+            </span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span >&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body text-center">
+          <span *ngIf="!notificationService.isError" class="text-success"><h2>Upload file Success</h2></span>
+          <span *ngIf="notificationService.isError" class="text-danger"><h2>Upload file Failed</h2></span>
+        </div>
+
+        <div class="modal-footer text-center">
+            <button type="button" class="btn" data-dismiss="modal"
+              [ngClass]="{ 'btn-success' : !notificationService.isError,
+              'btn-danger' : notificationService.isError
+            }">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger font-weight-bold">
+            Are you sure?
+          </h5>
+        </div>
+
+        <div class="modal-body">
+          <div class="text-center">
+            <img style="width: 128px;" src="../../../assets/error.png" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="notificationService.invokeConfirmFn()" type="button" class="btn btn-outline-danger btn-round">
+            <i class="fas fa-exclamation-triangle"></i> Yes
+          </button>
+
+          <button type="button" class="btn btn-outline-default btn-round" data-dismiss="modal">
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
