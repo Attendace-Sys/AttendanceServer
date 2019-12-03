@@ -24,7 +24,8 @@ class StudentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # return Student.objects.create(**validated_data)
-
+        for each in self.cleaned_data['files']:
+            StudentImagesData.objects.create(image_data=each, student=instance)
         student = Student.objects.create(**validated_data)
         return student
 

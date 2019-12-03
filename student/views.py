@@ -9,11 +9,11 @@ from rest_framework.views import APIView
 from rest_framework.parsers import FormParser
 from django.http.multipartparser import MultiPartParser
 from . import helpers
-
+from student.forms import StudentForms, StudentImagesDataForms
+from django.views.generic.edit import CreateView
 
 # Create your views here.
-
-class StudentView(viewsets.ModelViewSet):
+class StudentSerializerView(viewsets.ModelViewSet):
     queryset = Student.objects.all().order_by('student_code')
     serializer_class = StudentSerializer
 
@@ -48,3 +48,16 @@ def FaceVideo_show(request):
             face_images_serializer.save()
             return HttpResponse(status=HttpResponse.status_code)
         return HttpResponse(status=HttpResponse.status_code)
+
+
+class StudentView(CreateView):
+    queryset = Student.objects.all()
+    model = Student
+    form_class = StudentForms
+    template_name = 'contact_form/form.html'
+    success_url = '?success'
+"""
+def csrf_failure(request, reason=""):
+    ctx = {'message': 'some custom messages'}
+    return render_to_response(your_custom_template, ctx)
+"""
