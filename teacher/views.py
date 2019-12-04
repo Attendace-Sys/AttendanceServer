@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from .serializers import TeacherSerializer
 
 # Create your views here.
-
+# -*- coding: utf-8 -*-
 
 class TeacherView(viewsets.ModelViewSet):
     queryset = Teacher.objects.all().order_by('teacher_code')

@@ -12,7 +12,7 @@ from . import helpers
 from student.forms import StudentForms, StudentImagesDataForms
 from django.views.generic.edit import CreateView
 from django.views.decorators.csrf import csrf_exempt
-
+# -*- coding: utf-8 -*-
 # Create your views here.
 class StudentSerializerView(viewsets.ModelViewSet):
     queryset = Student.objects.all().order_by('student_code')
@@ -58,6 +58,6 @@ class StudentView(CreateView):
     model = Student
     form_class = StudentForms
     template_name = 'contact_form/form.html'
-    success_url = '?success'
+    success_url = 'serializer/students'
 
    

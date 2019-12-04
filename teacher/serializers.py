@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Teacher
-
+# -*- coding: utf-8 -*-
 
 class TeacherSerializer(serializers.ModelSerializer):
     """

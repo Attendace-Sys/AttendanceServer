@@ -93,10 +93,15 @@ DATABASES = {
         'PASSWORD': 'Linhkute123',
         'HOST': 'attendancewebapps-mysqldbserver.mysql.database.azure.com',
         'PORT': '3306',
-        'default_charset' : "utf-8",
+        'use_unicode': True,
+        'sql_mode': 'traditional',
+        'character-set-server' : 'utf8mb4',
         'OPTIONS': {
-            'sql_mode': 'traditional',
+            'charset': 'utf8mb4',
+            # 'COLLATION': 'utf8mb4_unicode_ci',
         }
+
+
     }
 }
 
@@ -135,7 +140,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+    )
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # more code import media url
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -155,3 +163,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+# DEFAULT_CHARSET = 'utf-8mb4'

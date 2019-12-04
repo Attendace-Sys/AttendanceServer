@@ -2,6 +2,7 @@ from django.db import models
 #(01-delete)from django.contrib.auth.models import AbstractUser
 import os
 from uuid import uuid4
+# -*- coding: utf-8 -*-
 """
 # (01-delete)
 class User(AbstractUser):
@@ -11,6 +12,7 @@ class User(AbstractUser):
 
 # Create your models here.
 class Teacher(models.Model):
+    # -*- coding: utf-8 -*-
     teacher_code = models.CharField(max_length=20, null=False, primary_key=True)
     full_name = models.CharField(max_length=20, null=False) #(01-add)
     #(01-delete) user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)

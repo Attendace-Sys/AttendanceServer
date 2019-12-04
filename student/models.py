@@ -1,7 +1,7 @@
 from django.db import models
 #(01-delete) from teacher.models import User
 import os
-
+# -*- coding: utf-8 -*-
 # Create your models here.
 class Student(models.Model):
     
@@ -30,7 +30,8 @@ class Student(models.Model):
 
 class StudentImagesData(models.Model):
 
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
+    image_code = models.AutoField(primary_key=True)
     def path_and_rename(self, name):
         filename=''
         name, ext = os.path.split(self.image_data.name)

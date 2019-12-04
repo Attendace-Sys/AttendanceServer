@@ -8,7 +8,7 @@ class StudentImagesDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentImagesData
-        fields = ['student', 'image_data']
+        fields = ['image_code', 'student', 'image_data', 'image_date_upload']
 
 
 class StudentSerializer(serializers.ModelSerializer):
