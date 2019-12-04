@@ -96,6 +96,7 @@ DATABASES = {
         'use_unicode': True,
         'sql_mode': 'traditional',
         'character-set-server' : 'utf8mb4',
+        'default-character-set' : 'utf8mb4',
         'OPTIONS': {
             'charset': 'utf8mb4',
             # 'COLLATION': 'utf8mb4_unicode_ci',
