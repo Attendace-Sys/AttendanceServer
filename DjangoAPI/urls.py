@@ -23,7 +23,7 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('admin', admin.site.urls),
     path('teachers/', include('teacher.urls')),
-    path('', include('student.urls')),
+    path('students', include('student.urls')),
     path('courses/', include('course.urls')),
    #  path('',auth_views.login(user='anonymous', passwd='', acct='')
 
