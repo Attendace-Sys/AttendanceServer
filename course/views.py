@@ -8,13 +8,13 @@ from .serializers import CourseSerializer
 # Create your views here.
 
 class TeacherView(viewsets.ModelViewSet):
-    queryset = Course.objects.all().order_by('teacher_code')
+    queryset = Course.objects.all().order_by('teacher')
     serializer_class = CourseSerializer
 
 
 def teacher_show(request):
     if request.method == 'GET':
-        courses = Course.objects.all().order_by('teacher_code')
+        courses = Course.objects.all().order_by('teacher')
         courses_serializer = CourseSerializer(courses, many=True)
         return HttpResponse(status=HttpResponse.status_code)
     elif request.method == 'POST':
