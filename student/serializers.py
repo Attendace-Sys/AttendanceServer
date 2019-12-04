@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Student
 from .models import StudentImagesData
 from . import models
-
+from multiupload.fields import MultiFileField
 
 class StudentImagesDataSerializer(serializers.ModelSerializer):
 
@@ -12,23 +12,22 @@ class StudentImagesDataSerializer(serializers.ModelSerializer):
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    images = StudentImagesDataSerializer(many=True, read_only=True)
+    # files = MultiFileField(min_num=1, max_num=15, max_file_size=1024*1024*5)
     class Meta:
         model = Student
-        fields = ['student_code','first_name',
-                'last_name', 'email',
-                'student_video_data', 'images',
-                'username',
-                'password', ]
-        # fields ='__all__'
+        fields ='__all__'
+    
 
     def create(self, validated_data):
-        # return Student.objects.create(**validated_data)
-        for each in self.cleaned_data['files']:
-            StudentImagesData.objects.create(image_data=each, student=instance)
-        student = Student.objects.create(**validated_data)
-        return student
+        return Student.objects.create(**validated_data)
+        """# file_obj = validated_data.request.FILES['files']
 
+        images_data = validated_data.pop('files')
+        student = Student.objects.create(**validated_data)
+        for image_data in images_data:
+            StudentImagesData.objects.create(student=student, **image_data)
+        return student
+        """
     def update(self, instance, validated_data):
         images = validated_data.pop('images')
         # return super().update(instance, validated_data)

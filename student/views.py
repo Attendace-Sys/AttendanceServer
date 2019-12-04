@@ -56,8 +56,5 @@ class StudentView(CreateView):
     form_class = StudentForms
     template_name = 'contact_form/form.html'
     success_url = '?success'
-"""
-def csrf_failure(request, reason=""):
-    ctx = {'message': 'some custom messages'}
-    return render_to_response(your_custom_template, ctx)
-"""
+
+   

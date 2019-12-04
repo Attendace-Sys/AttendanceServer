@@ -21,9 +21,9 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 urlpatterns = [
-    path('', admin.site.urls),
+    path('admin', admin.site.urls),
     path('teachers/', include('teacher.urls')),
-    path('students/', include('student.urls')),
+    path('', include('student.urls')),
     path('courses/', include('course.urls')),
    #  path('',auth_views.login(user='anonymous', passwd='', acct='')
 

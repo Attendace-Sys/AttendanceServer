@@ -30,4 +30,4 @@ class Attendance(models.Model):
     schedule_code = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
     absent_status = models.BooleanField(default=False)
     # save to student_name folder
-    image_data = models.FileField(upload_to='media/students/images/{student_code(student_name)}', blank=False, null=False)
+    image_data = models.FileField(upload_to='media/students/images/}', blank=False, null=False)
