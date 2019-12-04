@@ -8,7 +8,7 @@ class Student(models.Model):
     student_code = models.CharField(max_length=20, unique=True, null=False, primary_key=True)
     # lock user and change to manual field#(01-add)
     #(01-delete) user = models.ManyToManyField(User, related_name="student_user")
-    full_name = models.CharField(max_length=50, unique=True, null=False) #(01-add)
+    full_name = models.CharField(max_length=50, null=False) #(01-add)
     email = models.EmailField(max_length=50, blank=False, null=False)#(01-add)
     # end change#(01-add)
     def path_and_rename(self, name):

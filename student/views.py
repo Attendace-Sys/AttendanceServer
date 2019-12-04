@@ -11,6 +11,7 @@ from django.http.multipartparser import MultiPartParser
 from . import helpers
 from student.forms import StudentForms, StudentImagesDataForms
 from django.views.generic.edit import CreateView
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 class StudentSerializerView(viewsets.ModelViewSet):
@@ -49,7 +50,9 @@ def FaceVideo_show(request):
             return HttpResponse(status=HttpResponse.status_code)
         return HttpResponse(status=HttpResponse.status_code)
 
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+@method_decorator(csrf_exempt, name='dispatch')
 class StudentView(CreateView):
     queryset = Student.objects.all()
     model = Student

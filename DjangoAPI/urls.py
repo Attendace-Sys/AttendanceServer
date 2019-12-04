@@ -21,7 +21,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('teachers/', include('teacher.urls')),
     path('students/', include('student.urls')),
     path('courses/', include('course.urls')),
