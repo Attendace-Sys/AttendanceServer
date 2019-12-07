@@ -10,7 +10,7 @@ import {NotificationService} from '../services/notification_services/notificatio
 })
 export class ProfileComponent implements OnInit {
 
-  DJANGO_SERVER = 'http://127.0.0.1:8000';
+  DJANGO_SERVER = 'http://127.0.0.1:8000/students/';
   form: FormGroup;
   myFiles: string[] = [];
   response;
@@ -24,18 +24,24 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      fileName: '',
-      studentName: '',
-      studentCode: '',
-      studentClass: '',
-      fileData: []
+      student_code: '',
+      first_name: '',
+      last_name: '',
+      email: '',
+      username: '',
+      password: '',
+      students_video_data: '',
+      files: []
     });
   }
-  get fileData() { return this.form.get('fileData'); }
-  get fileName() { return this.form.get('fileName'); }
-  get studentName() { return this.form.get('studentName'); }
-  get studentCode() { return this.form.get('studentCode'); }
-  get studentClass() { return this.form.get('studentClass'); }
+  get student_code() { return this.form.get('student_code'); }
+  get first_name() { return this.form.get('first_name'); }
+  get last_name() { return this.form.get('studelast_namentName'); }
+  get email() { return this.form.get('email'); }
+  get username() { return this.form.get('username'); }
+  get password() { return this.form.get('password'); }
+  get students_video_data() { return this.form.get('students_video_data'); }
+  get files() { return this.form.get('files'); }
 
   onChange(event) {
     if (event.target.files.length > 0) {

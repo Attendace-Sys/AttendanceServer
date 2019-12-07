@@ -1,16 +1,14 @@
 from django.db import models
-#(01-delete) from teacher.models import User
+from teacher.models import User
 import os
+from django.urls import reverse
+from django.conf import settings
+
 # -*- coding: utf-8 -*-
 # Create your models here.
-class Student(models.Model):
+class Student(User):
     
     student_code = models.CharField(max_length=20, unique=True, null=False, primary_key=True)
-    # lock user and change to manual field#(01-add)
-    #(01-delete) user = models.ManyToManyField(User, related_name="student_user")
-    full_name = models.CharField(max_length=50, null=False) #(01-add)
-    email = models.EmailField(max_length=50, blank=False, null=False)#(01-add)
-    # end change#(01-add)
     def path_and_rename(self, name):
         filename=''
         name, ext = os.path.split(self.student_video_data.name)
@@ -23,7 +21,10 @@ class Student(models.Model):
         return filename
     student_video_data = models.FileField(upload_to=path_and_rename, blank=False, null=True)
     def __str__(self):
-        return self.student_code
+        return self.first_name + self.last_name
+
+    def get_absolute_url(self):
+        return reverse('student:student_edit', kwargs={'student_code': self.student_code})  
 
     def save(self, *args, **kwargs):
         super(Student, self).save(*args, **kwargs)
@@ -31,7 +32,7 @@ class Student(models.Model):
 class StudentImagesData(models.Model):
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
-    image_code = models.AutoField(primary_key=True)
+    # image_code = models.AutoField(primary_key=True)
     def path_and_rename(self, name):
         filename=''
         name, ext = os.path.split(self.image_data.name)
@@ -43,9 +44,8 @@ class StudentImagesData(models.Model):
         # return the whole path to the file
         return filename
     # save picture to student folder
-    image_data = models.FileField(upload_to=path_and_rename, blank=False, null=True)
+    image_data = models.FileField(upload_to=path_and_rename, blank=False, null=False)
     image_date_upload = models.DateTimeField(auto_now_add=True, null=True)
 
     def save(self, *args, **kwargs):
         super(StudentImagesData, self).save(*args, **kwargs)
-    

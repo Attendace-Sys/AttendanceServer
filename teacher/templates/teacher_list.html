@@ -1,0 +1,12 @@
+<h2><a href="{% url 'teacher:teacher_list' %}">Teacher</a></h2>
+
+<ul>
+    {% for teacher in object_list %}
+    <li>{{ teacher.teacher_code }}
+    <a href="{% url 'teacher:teacher_edit' teacher.teacher_code %}">edit</a>
+    <a href="{% url 'teacher:teacher_delete' teacher.teacher_code %}">delete</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'teacher:teacher_new' %}">New</a>

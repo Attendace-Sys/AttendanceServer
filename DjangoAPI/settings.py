@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'student.apps.StudentConfig',
     'teacher.apps.TeacherConfig',
     'course.apps.CourseConfig',
+    'theme',
 
 ]
 
@@ -83,26 +84,31 @@ WSGI_APPLICATION = 'DjangoAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+   # 'default': {
+   #     'ENGINE': 'django.db.backends.mysql',
+   #     'NAME': 'mysqldatabase',
+   #     'USER': 'nguyentanphatka@mysqldatabaseforserver',
+   #     'PASSWORD': 'Linhkute123',
+   #     'HOST': 'mysqldatabaseforserver.mysql.database.azure.com',
+   #     'PORT': '3306',
+   #     'use_unicode': True,
+   #     'sql_mode': 'traditional',
+   #     'character-set-server' : 'utf8mb4',
+   #     'default-character-set' : 'utf8mb4',
+   #     'OPTIONS': {
+   #         'charset': 'utf8mb4',
+   #     }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        #db for test
-        # 'NAME': 'mysqldatabaseforlocaltest',
         'NAME': 'mysqldatabase',
-        'USER': 'mysqldbuser@attendancewebapps-mysqldbserver',
+        'USER': 'root',
         'PASSWORD': 'Linhkute123',
-        'HOST': 'attendancewebapps-mysqldbserver.mysql.database.azure.com',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
-        'use_unicode': True,
-        'sql_mode': 'traditional',
-        'character-set-server' : 'utf8mb4',
-        'default-character-set' : 'utf8mb4',
         'OPTIONS': {
             'charset': 'utf8mb4',
-            # 'COLLATION': 'utf8mb4_unicode_ci',
         }
-
-
     }
 }
 
@@ -155,7 +161,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8080",
     "http://127.0.0.1:9000"
 ]
-# AUTH_USER_MODEL = 'teacher.user'
+AUTH_USER_MODEL = 'teacher.User'
 # AUTH_USER_MODEL = 'student.user'
 
 REST_FRAMEWORK = {

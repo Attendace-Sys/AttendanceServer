@@ -11,8 +11,8 @@ class TeacherSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Teacher
-        fields = '__all__'
-        # fields = ['id', 'username', 'first_name', 'last_name', 'email', 'teacher_code', 'teacher_image']
+        #fields = '__all__'
+        fields = ['teacher_code', 'first_name', 'last_name', 'email', 'teacher_image', 'username', 'password']
 
     def create(self, validated_data):
         return Teacher.objects.create(**validated_data)
