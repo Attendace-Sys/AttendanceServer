@@ -7,6 +7,10 @@ from teacher.forms import TeacherForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
+from .forms import TeacherFormCreationForm
+
 
 # Create your views here.
 # -*- coding: utf-8 -*-
@@ -14,6 +18,7 @@ from django.utils.decorators import method_decorator
 class TeacherView(viewsets.ModelViewSet):
     queryset = Teacher.objects.all().order_by('teacher_code')
     serializer_class = TeacherSerializer
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 def teacher_show(request):
@@ -29,12 +34,13 @@ def teacher_show(request):
             return HttpResponse(status=HttpResponse.status_code)
         return HttpResponse(status=HttpResponse.status_code)
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 def teacher_list(request, template_name='teacher_list.html'):
     teacher = Teacher.objects.all()
-    data = {}
-    data['object_list'] = teacher
+    data = {'object_list': teacher}
     return render(request, template_name, data)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 def teacher_create(request, template_name='teacher_form.html'):
@@ -42,7 +48,8 @@ def teacher_create(request, template_name='teacher_form.html'):
     if form.is_valid():
         form.save()
         return redirect('teacher:teacher_list')
-    return render(request, template_name, {'form':form})
+    return render(request, template_name, {'form': form})
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 def teacher_update(request, teacher_code, template_name='teacher_form.html'):
@@ -51,12 +58,19 @@ def teacher_update(request, teacher_code, template_name='teacher_form.html'):
     if form.is_valid():
         form.save()
         return redirect('teacher:teacher_list')
-    return render(request, template_name, {'form':form})
+    return render(request, template_name, {'form': form})
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 def teacher_delete(request, teacher_code, template_name='teacher_confirm_delete.html'):
-    teacher = get_object_or_404(Teacher, teacher_code=teacher_code)    
-    if request.method=='POST':
+    teacher = get_object_or_404(Teacher, teacher_code=teacher_code)
+    if request.method == 'POST':
         teacher.delete()
         return redirect('teacher:teacher_list')
-    return render(request, template_name, {'object':teacher})
+    return render(request, template_name, {'object': teacher})
+
+
+class SignUpView(CreateView):
+    form_class = TeacherFormCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'signup.html'

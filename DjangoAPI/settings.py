@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'teacher.apps.TeacherConfig',
     'course.apps.CourseConfig',
     'theme',
+    'django_admin_listfilter_dropdown',
+    'rangefilter',
+    'import_export',
 
 ]
 
@@ -84,20 +87,20 @@ WSGI_APPLICATION = 'DjangoAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-   # 'default': {
-   #     'ENGINE': 'django.db.backends.mysql',
-   #     'NAME': 'mysqldatabase',
-   #     'USER': 'nguyentanphatka@mysqldatabaseforserver',
-   #     'PASSWORD': 'Linhkute123',
-   #     'HOST': 'mysqldatabaseforserver.mysql.database.azure.com',
-   #     'PORT': '3306',
-   #     'use_unicode': True,
-   #     'sql_mode': 'traditional',
-   #     'character-set-server' : 'utf8mb4',
-   #     'default-character-set' : 'utf8mb4',
-   #     'OPTIONS': {
-   #         'charset': 'utf8mb4',
-   #     }
+# 'default': {
+#     'ENGINE': 'django.db.backends.mysql',
+#     'NAME': 'mysqldatabase',
+#     'USER': 'nguyentanphatka@mysqldatabaseforserver',
+#     'PASSWORD': 'Linhkute123',
+#     'HOST': 'mysqldatabaseforserver.mysql.database.azure.com',
+#     'PORT': '3306',
+#     'use_unicode': True,
+#     'sql_mode': 'traditional',
+#     'character-set-server' : 'utf8mb4',
+#     'default-character-set' : 'utf8mb4',
+#     'OPTIONS': {
+#         'charset': 'utf8mb4',
+#     }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -149,7 +152,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-    )
+)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # more code import media url
 MEDIA_URL = '/media/'
@@ -161,8 +164,11 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8080",
     "http://127.0.0.1:9000"
 ]
+
 AUTH_USER_MODEL = 'teacher.User'
-# AUTH_USER_MODEL = 'student.user'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

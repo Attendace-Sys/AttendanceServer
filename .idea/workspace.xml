@@ -5,43 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/PC.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course/templates/courses_changelist.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/course/templates/csv_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student/resources.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher/templates/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher/templates/home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher/templates/registration/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher/templates/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoAPI/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profile/profile.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profile/profile.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profile/profile.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profile/profile.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/teachers/images/cat.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/teachers/images/cat_L0ICqmY.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/teachers/images/images.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoAPI/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/helpers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/migrations/0001_initial.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/templates/contact_form/form.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/Django-2.2.7.dist-info/RECORD" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/Django-2.2.7.dist-info/RECORD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/pip-19.3.1.dist-info/RECORD" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/pip-19.3.1.dist-info/RECORD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/setuptools-42.0.1.dist-info/RECORD" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/setuptools-42.0.1.dist-info/RECORD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/sqlparse-0.3.0.dist-info/RECORD" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/sqlparse-0.3.0.dist-info/RECORD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/wheel-0.33.6.dist-info/RECORD" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/wheel-0.33.6.dist-info/RECORD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/django-admin.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/django-admin.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/easy_install-3.7.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/easy_install-3.7.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/easy_install.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/easy_install.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/pip.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/pip.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/pip3.7.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/pip3.7.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/pip3.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/pip3.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/sqlformat.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/sqlformat.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/Scripts/wheel.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/wheel.exe" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,6 +44,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -62,10 +53,16 @@
   </component>
   <component name="ProjectId" id="1TdNBahcJxmlvKlWZYESnubNd73" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/frontend/src/assets" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/course" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
@@ -74,28 +71,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Code\AttendanceServer\course" />
       <recent name="C:\Code\dj\DjangoAPI\frontend\src\assets" />
       <recent name="D:\DjangoAPI\frontend\src\app\services" />
       <recent name="D:\DjangoAPI\frontend\src\app\shared" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Code\AttendanceServer\student" />
       <recent name="C:\Code\dj\DjangoAPI\frontend\src\app\services\upload_services" />
       <recent name="C:\Code\dj\DjangoAPI\frontend\src\app\services\notification_services" />
       <recent name="D:\DjangoAPI\frontend\src\assets" />
       <recent name="D:\DjangoAPI\frontend\src\app\shared\assets" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager">
     <configuration name="DjangoAPI" type="Python.DjangoServer" factoryName="Django server">
@@ -123,6 +110,18 @@
       <method v="2" />
     </configuration>
   </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -142,6 +141,10 @@
       <workItem from="1574614579116" duration="744000" />
       <workItem from="1574777600678" duration="202000" />
       <workItem from="1574843560205" duration="282000" />
+      <workItem from="1575811544885" duration="2281000" />
+      <workItem from="1575823729095" duration="46000" />
+      <workItem from="1575823886005" duration="5632000" />
+      <workItem from="1575889283685" duration="23316000" />
     </task>
     <servers />
   </component>
@@ -160,5 +163,15 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1032" y="183" key="#Inspections" timestamp="1575891841225">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="1032" y="183" key="#Inspections/0.0.1920.1050@0.0.1920.1050" timestamp="1575891841225" />
+    <state x="656" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1575889321345">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="656" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1575889321345" />
   </component>
 </project>

@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect, get_object_or_404
 
+
 # -*- coding: utf-8 -*-
 # Create your views here.
 class StudentSerializerView(viewsets.ModelViewSet):
@@ -40,6 +41,7 @@ class StudentImagesDataView(viewsets.ModelViewSet):
     queryset = StudentImagesData.objects.all()
     serializer_class = StudentImagesDataSerializer
 
+
 def FaceVideo_show(request):
     if request.method == 'GET':
         face_images = StudentImagesData.objects.all()
@@ -62,6 +64,7 @@ class StudentView(CreateView):
     template_name = 'student_form.html'
     success_url = 'serializer/students'
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 @login_required
 def student_list(request, template_name='student_list.html'):
@@ -69,9 +72,9 @@ def student_list(request, template_name='student_list.html'):
         student = Student.objects.all()
     else:
         student = Student.objects.filter(user=request.user)
-    data = {}
-    data['object_list'] = student
+    data = {'object_list': student}
     return render(request, template_name, data)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 @login_required
@@ -80,29 +83,31 @@ def student_create(request, template_name='student_form.html'):
     if form.is_valid():
         form.save()
         return redirect('student:student_list')
-    return render(request, template_name, {'form':form})
- 
+    return render(request, template_name, {'form': form})
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 @login_required
 def student_update(request, student_code, template_name='student_form.html'):
     if request.user.is_superuser:
-        student= get_object_or_404(Student, student_code=student_code)
+        student = get_object_or_404(Student, student_code=student_code)
     else:
-        student= get_object_or_404(Student, student_code=student_code, user=request.user)
+        student = get_object_or_404(Student, student_code=student_code, user=request.user)
     form = StudentForms(request.POST or None, request.FILES or None, instance=student)
     if form.is_valid():
         form.save()
         return redirect('student:student_list')
-    return render(request, template_name, {'form':form})
+    return render(request, template_name, {'form': form})
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 @login_required
 def student_delete(request, student_code, template_name='student_confirm_delete.html'):
     if request.user.is_superuser:
-        student= get_object_or_404(Student, student_code=student_code)
+        student = get_object_or_404(Student, student_code=student_code)
     else:
-        student= get_object_or_404(Student, student_code=student_code, user=request.user)
-    if request.method=='POST':
+        student = get_object_or_404(Student, student_code=student_code, user=request.user)
+    if request.method == 'POST':
         student.delete()
         return redirect('student:student_list')
-    return render(request, template_name, {'object':student})
+    return render(request, template_name, {'object': student})
