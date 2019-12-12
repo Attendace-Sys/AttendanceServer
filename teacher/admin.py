@@ -24,9 +24,6 @@ class ImageInline(admin.TabularInline):
 
 
 class TeacherAdmin(ImportExportModelAdmin):
-    add_form = TeacherFormCreationForm
-    form = TeacherFormChangeForm
-    model = Teacher
 
     list_display = ('teacher_code', 'get_full_name', 'email', 'username', 'password', 'date_joined',
                     'teacher_image_show', 'days_since_creation', 'is_staff', 'is_superuser')
@@ -35,11 +32,12 @@ class TeacherAdmin(ImportExportModelAdmin):
     list_per_page = 10
     actions = ['delete_media', ]
     readonly_fields = ['date_joined', 'days_since_creation', 'teacher_full_image_show']
+
     fieldsets = (
         (None, {
             'fields': (
                 'teacher_code', 'first_name', 'last_name', 'email', 'teacher_image',
-                'username', 'password', 'is_staff', 'is_active', 'is_superuser', ),
+                'username', 'password', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions', ),
         }),
         ('Advance options', {
             'fields': ('date_joined', 'teacher_full_image_show'),
@@ -51,6 +49,8 @@ class TeacherAdmin(ImportExportModelAdmin):
         ('teacher_code', DropdownFilter),
         # ('Course', RelatedDropdownFilter)
     )
+
+    filter_horizontal = ('groups', 'user_permissions')
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
@@ -105,12 +105,6 @@ class TeacherAdmin(ImportExportModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.user = request.user
         super(TeacherAdmin, self).save_model(request, obj, form, change)
-
-    def get_queryset(self, request):
-        qs = super(TeacherAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        return qs.filter(owner=request.user)
 
 
 # Register your models Teacher.

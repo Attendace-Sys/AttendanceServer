@@ -69,8 +69,3 @@ def teacher_delete(request, teacher_code, template_name='teacher_confirm_delete.
         return redirect('teacher:teacher_list')
     return render(request, template_name, {'object': teacher})
 
-
-class SignUpView(CreateView):
-    form_class = TeacherFormCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'signup.html'

@@ -23,7 +23,7 @@ class Student(User):
         return filename
 
     student_video_data = models.FileField(upload_to=path_and_rename, blank=False, null=True)
-    comment = models.CharField(max_length=2000, null=True)
+    comment = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
         return self.first_name + self.last_name
@@ -32,6 +32,11 @@ class Student(User):
         return reverse('student:student_edit', kwargs={'student_code': self.student_code})
 
     def save(self, *args, **kwargs):
+        # default username and password
+        self.email = "" + self.student_code + "@gm.uit.edu.vn"
+        self.last_name = ""
+        self.username = self.student_code.__str__
+        self.password = self.student_code.__str__
         super(Student, self).save(*args, **kwargs)
 
     class Meta:

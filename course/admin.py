@@ -37,7 +37,7 @@ class ExportCsvMixin:
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
         writer = csv.writer(response)
-
+        writer.writerow(field_names)
         writer.writerow(field_names)
         for obj in queryset:
             row = writer.writerow([getattr(obj, field) for field in field_names])
@@ -54,12 +54,13 @@ class TeacherChoiceField(forms.ModelChoiceField):
 
 
 class CourseAdmin(ImportExportModelAdmin, ExportCsvMixin):
-    list_display = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'student_count', 'children_display',)
-    # list_filter = ('course_code', )
+    list_display = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'student_count', 'children_display'
+                    , 'class_time', 'class_time_calendar', 'class_time_begin_time', )
     search_fields = ('course_code',)
     fieldsets = (
         (None, {
-            'fields': ('course_code', 'course_name', 'start_day', 'end_day', 'teacher',)
+            'fields': ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'class_time',
+                       'class_time_calendar', 'class_time_begin_time', )
         }),
         ('Advance options', {
             'fields': ('students',),
@@ -158,7 +159,8 @@ class CourseAdmin(ImportExportModelAdmin, ExportCsvMixin):
         response['Content-Disposition'] = 'attachment; filename={0}.csv'.format(name)
         writer = csv.writer(response)
 
-        # writer.writerow(field_names)
+        writer.writerow(['Data export'])
+        writer.writerow(['Ma mon hoc', 'Ten mon hoc', 'Ngay bat dau', 'Ngay ket thuc', 'Giao vien phu trach'])
         for obj in queryset:
             row = writer.writerow([getattr(obj, field) for field in field_names])
 
