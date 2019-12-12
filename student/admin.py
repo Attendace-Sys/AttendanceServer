@@ -64,23 +64,31 @@ class ImageInline(admin.TabularInline):
 
 
 class StudentAdmin(ImportExportModelAdmin, ):
+    labels = {
+        'first_name': 'Full Name'
+    }
     list_display = (
-        'student_code', 'first_name', 'last_name', 'email', 'username', 'password', 'student_video_data',
+        'student_code', 'get_full_name', 'email', 'username', 'password',
         'comment',)
+
     list_filter = ('student_code',)
     search_fields = ('student_code',)
     inlines = (ImageInline,)
     fieldsets = (
         (None, {
-            'fields': ('student_code', 'first_name', 'last_name', 'email', 'student_video_data', 'comment',)
+            'fields': ('student_code', 'first_name', 'email', 'student_video_data', 'comment',)
         }),
-        ('Advance options', {
+        ('Options', {
             'fields': ('username', 'password',),
             'description': 'option advance',
             'classes': ('collapse',),
         }),
     )
-    summernote_fields = 'comment'
+
+    def get_full_name(self, obj):
+        return obj.get_full_name()
+
+    get_full_name.short_description = 'Full name'
 
     resource_class = StudentsResource
 
@@ -142,6 +150,7 @@ class StudentAdmin(ImportExportModelAdmin, ):
             worksheet = wb.active
             worksheet.delete_rows(0, 9)
             worksheet.delete_cols(1, 1)
+            worksheet.delete_cols(7, 6)
             # worksheet.append(["student_code", "first_name", "last_name", "email", "username", "password"])
             worksheet.insert_rows(1)
             wb.save(import_file)
@@ -157,7 +166,8 @@ class StudentAdmin(ImportExportModelAdmin, ):
                 if not input_format.is_binary() and self.from_encoding:
                     data = force_text(data, self.from_encoding)
                 dataset = input_format.create_dataset(data)
-                print(dataset)
+                dataset.headers = ['student_code', 'first_name', 'email', 'username', 'password',
+                                   'comment']
             except UnicodeDecodeError as e:
                 return HttpResponse(_(u"<h1>Imported file has a wrong encoding: %s</h1>" % e))
             except Exception as e:
@@ -197,8 +207,9 @@ class StudentAdmin(ImportExportModelAdmin, ):
         context['title'] = _("Import")
         context['form'] = form
         context['opts'] = self.model._meta
-        context['fields'] = [f.column_name for f in resource.get_user_visible_fields()]
-
+        # context['fields'] = [f.column_name for f in resource.get_user_visible_fields()]
+        context['fields'] = ['student_code', 'first_name', 'email', 'username', 'password',
+                             'comment']
         request.current_app = self.admin_site.name
         return TemplateResponse(request, [self.import_template_name],
                                 context)

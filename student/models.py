@@ -22,7 +22,7 @@ class Student(User):
         # return the whole path to the file
         return filename
 
-    student_video_data = models.FileField(upload_to=path_and_rename, blank=False, null=True)
+    student_video_data = models.FileField(upload_to=path_and_rename, blank=True, null=True)
     comment = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
@@ -33,10 +33,12 @@ class Student(User):
 
     def save(self, *args, **kwargs):
         # default username and password
+        if self.student_video_data is None:
+            self.student_video_data = ""
         self.email = "" + self.student_code + "@gm.uit.edu.vn"
         self.last_name = ""
-        self.username = self.student_code.__str__
-        self.password = self.student_code.__str__
+        self.username = "" + self.student_code
+        self.password = "" + self.student_code
         super(Student, self).save(*args, **kwargs)
 
     class Meta:

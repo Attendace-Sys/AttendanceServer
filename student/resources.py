@@ -40,9 +40,11 @@ from django.db.transaction import (
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 import traceback
 from copy import deepcopy
+import tablib
+
 """
 import logging
-import tablib
+
 
 from collections import OrderedDict
 
@@ -76,9 +78,10 @@ from logging import *
 class StudentsResource(resources.ModelResource):
     class Meta:
         model = Student
-        fields = ('student_code', 'first_name', 'email', 'username', 'password')
-        export_order = (
-            'student_code', 'first_name', 'email', 'username', 'password')
+        fields = ('student_code', 'first_name', 'email', 'username', 'password',
+                  'comment')
+        export_order = ('student_code', 'first_name', 'email', 'username', 'password',
+                        'comment')
         import_id_fields = ('student_code',)
         skip_unchanged = True
         report_skipped = False
@@ -164,7 +167,8 @@ class StudentsResource(resources.ModelResource):
 
         # result.diff_headers = self.get_diff_headers()
         # get dataset.header to set import header
-        result.diff_headers = ['student_code', 'first_name', 'email', 'username', 'password', '', '']
+        result.diff_headers = ['student_code', 'first_name', 'email', 'username', 'password',
+                               'comment']
 
         result.total_rows = len(dataset)
 
