@@ -1,5 +1,5 @@
+{% extends 'admin/base.html' %}
 {% block content %}
-
 <h2><a href="{% url 'teacher:teacher_list' %}">Teacher</a>: Edit</h2>
 
 <form method="post" enctype="multipart/form-data">{% csrf_token %}

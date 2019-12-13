@@ -5,10 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/course/resources.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0002_auto_20191212_1340.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/templates/courses_changelist.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/templates/csv_form.html" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/student/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/templates/student_confirm_delete.html" beforeDir="false" afterPath="$PROJECT_DIR$/student/templates/student_confirm_delete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/templates/student_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/student/templates/student_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/templates/student_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/student/templates/student_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/templates/teacher_confirm_delete.html" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/templates/teacher_confirm_delete.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/templates/teacher_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/templates/teacher_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/templates/teacher_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/templates/teacher_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/pip-19.3.1.dist-info/RECORD" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/pip-19.3.1.dist-info/RECORD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/setuptools/installer.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/setuptools/installer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/wheel-0.33.6.dist-info/RECORD" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/wheel-0.33.6.dist-info/RECORD" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Scripts/easy_install-3.7.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/easy_install-3.7.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Scripts/easy_install.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/easy_install.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Scripts/pip.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/pip.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Scripts/pip3.7.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/pip3.7.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Scripts/pip3.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/pip3.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Scripts/wheel.exe" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Scripts/wheel.exe" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +63,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/course" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
@@ -48,18 +71,18 @@
     <property name="ts.external.directory.path" value="C:\Code\dj\DjangoAPI\frontend\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Code\AttendanceServer\course" />
-      <recent name="C:\Code\dj\DjangoAPI\frontend\src\assets" />
-      <recent name="D:\DjangoAPI\frontend\src\app\services" />
-      <recent name="D:\DjangoAPI\frontend\src\app\shared" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Code\AttendanceServer\student" />
       <recent name="C:\Code\dj\DjangoAPI\frontend\src\app\services\upload_services" />
       <recent name="C:\Code\dj\DjangoAPI\frontend\src\app\services\notification_services" />
       <recent name="D:\DjangoAPI\frontend\src\assets" />
       <recent name="D:\DjangoAPI\frontend\src\app\shared\assets" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Code\AttendanceServer\course" />
+      <recent name="C:\Code\dj\DjangoAPI\frontend\src\assets" />
+      <recent name="D:\DjangoAPI\frontend\src\app\services" />
+      <recent name="D:\DjangoAPI\frontend\src\app\shared" />
     </key>
   </component>
   <component name="RunManager" selected="Python.pathlib">
@@ -199,7 +222,8 @@
       <workItem from="1575889283685" duration="27221000" />
       <workItem from="1575993815813" duration="34362000" />
       <workItem from="1576132323842" duration="7087000" />
-      <workItem from="1576140484329" duration="6351000" />
+      <workItem from="1576140484329" duration="10154000" />
+      <workItem from="1576228396879" duration="6402000" />
     </task>
     <servers />
   </component>
@@ -284,10 +308,10 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="461" y="166" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1576115446854" />
-    <state x="656" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1576140486329">
+    <state x="656" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1576228402700">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="656" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1576140486329" />
+    <state x="656" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1576228402700" />
     <state x="769" y="441" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1576055292878">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>

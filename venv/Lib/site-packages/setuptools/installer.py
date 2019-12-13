@@ -7,9 +7,18 @@ from distutils.errors import DistutilsError
 
 import pkg_resources
 from setuptools.command.easy_install import easy_install
+from setuptools.extern import six
 from setuptools.wheel import Wheel
 
 from .py31compat import TemporaryDirectory
+
+
+def _fixup_find_links(find_links):
+    """Ensure find-links option end-up being a list of strings."""
+    if isinstance(find_links, six.string_types):
+        return find_links.split()
+    assert isinstance(find_links, (tuple, list))
+    return find_links
 
 
 def _legacy_fetch_build_egg(dist, req):
@@ -31,7 +40,7 @@ def _legacy_fetch_build_egg(dist, req):
     if dist.dependency_links:
         links = dist.dependency_links[:]
         if 'find_links' in opts:
-            links = opts['find_links'][1] + links
+            links = _fixup_find_links(opts['find_links'][1]) + links
         opts['find_links'] = ('setup', links)
     install_dir = dist.get_egg_cache_dir()
     cmd = easy_install(
@@ -64,8 +73,8 @@ def fetch_build_egg(dist, req):
         pkg_resources.get_distribution('wheel')
     except pkg_resources.DistributionNotFound:
         dist.announce('WARNING: The wheel package is not available.', log.WARN)
-    if not isinstance(req, pkg_resources.Requirement):
-        req = pkg_resources.Requirement.parse(req)
+    # Ignore environment markers; if supplied, it is required.
+    req = strip_marker(req)
     # Take easy_install options into account, but do not override relevant
     # pip environment variables (like PIP_INDEX_URL or PIP_QUIET); they'll
     # take precedence.
@@ -84,7 +93,7 @@ def fetch_build_egg(dist, req):
     else:
         index_url = None
     if 'find_links' in opts:
-        find_links = opts['find_links'][1][:]
+        find_links = _fixup_find_links(opts['find_links'][1])[:]
     else:
         find_links = []
     if dist.dependency_links:
@@ -127,3 +136,15 @@ def fetch_build_egg(dist, req):
         dist = pkg_resources.Distribution.from_filename(
             dist_location, metadata=dist_metadata)
         return dist
+
+
+def strip_marker(req):
+    """
+    Return a new requirement without the environment marker to avoid
+    calling pip with something like `babel; extra == "i18n"`, which
+    would always be ignored.
+    """
+    # create a copy to avoid mutating the input
+    req = pkg_resources.Requirement.parse(str(req))
+    req.marker = None
+    return req

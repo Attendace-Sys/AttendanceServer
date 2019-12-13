@@ -128,7 +128,8 @@ class StudentAdmin(ImportExportModelAdmin, ):
             raise PermissionDenied
 
         context = self.get_import_context_data()
-
+        print("show context")
+        print(context)
         import_formats = self.get_import_formats()
 
         form_type = self.get_import_form()
@@ -168,6 +169,8 @@ class StudentAdmin(ImportExportModelAdmin, ):
                 dataset = input_format.create_dataset(data)
                 dataset.headers = ['student_code', 'first_name', 'email', 'username', 'password',
                                    'comment']
+                print("show dataset")
+                print(dataset)
             except UnicodeDecodeError as e:
                 return HttpResponse(_(u"<h1>Imported file has a wrong encoding: %s</h1>" % e))
             except Exception as e:

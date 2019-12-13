@@ -19,7 +19,7 @@ class Teacher(User):
     teacher_image = models.ImageField(upload_to='teachers/images', null=True)
 
     def get_absolute_url(self):
-        return reverse('teacher_edit', kwargs={'teacher_code': self.teacher_code})
+        return reverse('teacher:teacher_edit', kwargs={'teacher_code': self.teacher_code})
 
     """
     #we can add @property or get query set to create property column

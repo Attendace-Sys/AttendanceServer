@@ -1,3 +1,5 @@
+{% extends 'admin/base.html' %}
+{% block content %}
 <h2><a href="{% url 'teacher:teacher_list' %}">Teacher</a></h2>
 
 <ul>
@@ -10,3 +12,4 @@
 </ul>
 
 <a href="{% url 'teacher:teacher_new' %}">New</a>
+{% endblock %}
