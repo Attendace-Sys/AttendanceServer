@@ -1,4 +1,5 @@
-from import_export import resources
+from import_export import resources, fields
+from import_export.widgets import JSONWidget, ManyToManyWidget, ForeignKeyWidget
 from django.contrib import admin
 from django.db.models import Count
 from student.models import Student, StudentImagesData
@@ -13,6 +14,7 @@ from django.http import HttpResponse
 from django.utils.safestring import mark_safe
 from datetime import datetime
 from import_export.resources import Resource, DeclarativeMetaclass
+from import_export.resources import Error, Result, RowResult
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin, messages
@@ -41,21 +43,31 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 import traceback
 from copy import deepcopy
 import tablib
+from student.models import Student
+from student.admin import StudentAdmin
+import logging
+from django.db import transaction
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class CoursesResource(resources.ModelResource):
+    # students = fields.Field(attribute='students', widget=ManyToManyWidget(students), column_name='students')
+    students = fields.Field(
+        attribute='students',
+        widget=ManyToManyWidget(model=Student, separator=',', field='student_code'),
+    )
+
     class Meta:
-        model = Student
-        fields = ('student_code', 'first_name', 'email', 'username', 'password',
-                  'comment')
-        export_order = ('student_code', 'first_name', 'email', 'username', 'password',
-                        'comment')
-        import_id_fields = ('student_code',)
+        model = Course
+        fields = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'students', 'class_time',
+                  'class_time_calendar', 'class_time_begin_time')
+        export_order = fields
+        import_id_fields = ('course_code',)
         skip_unchanged = True
         report_skipped = False
 
     def import_row(self, row, instance_loader, using_transactions=True, dry_run=False, **kwargs):
-
         row_result = self.get_row_result_class()()
         try:
             self.before_import_row(row, **kwargs)
@@ -106,8 +118,8 @@ class CoursesResource(resources.ModelResource):
             row_result.import_type = RowResult.IMPORT_TYPE_ERROR
             # There is no point logging a transaction error for each row
             # when only the original error is likely to be relevant
-            # if not isinstance(e, TransactionManagementError):
-            #    logger.debug(e, exc_info=e)
+            if not isinstance(e, TransactionManagementError):
+                logger.debug(e, exc_info=e)
             tb_info = traceback.format_exc()
             row_result.errors.append(self.get_error_result_class()(e, tb_info, row))
         return row_result
@@ -132,12 +144,7 @@ class CoursesResource(resources.ModelResource):
 
     def import_data_inner(self, dataset, dry_run, raise_errors, using_transactions, collect_failed_rows, **kwargs):
         result = self.get_result_class()()
-
-        # result.diff_headers = self.get_diff_headers()
-        # get dataset.header to set import header
-        result.diff_headers = ['student_code', 'first_name', 'email', 'username', 'password',
-                               'comment']
-
+        result.diff_headers = self.get_diff_headers()
         result.total_rows = len(dataset)
 
         if using_transactions:
@@ -149,23 +156,21 @@ class CoursesResource(resources.ModelResource):
             with atomic_if_using_transaction(using_transactions):
                 self.before_import(dataset, using_transactions, dry_run, **kwargs)
         except Exception as e:
-            # logger.debug(e, exc_info=e)
+            logger.debug(e, exc_info=e)
             tb_info = traceback.format_exc()
             result.append_base_error(self.get_error_result_class()(e, tb_info))
             if raise_errors:
                 raise
 
         instance_loader = self._meta.instance_loader_class(self, dataset)
+
         # Update the total in case the dataset was altered by before_import()
         result.total_rows = len(dataset)
-        dataset.headers = result.diff_headers
-        result.add_dataset_headers(result.diff_headers)
 
         if collect_failed_rows:
-            result.add_dataset_headers(result.diff_headers)
-        # for i, row in enumerate(dataset.dict, 1):
-        for i, row in enumerate(dataset.dict, 1):
+            result.add_dataset_headers(dataset.headers)
 
+        for i, row in enumerate(dataset.dict, 1):
             with atomic_if_using_transaction(using_transactions):
                 row_result = self.import_row(
                     row,
@@ -174,7 +179,6 @@ class CoursesResource(resources.ModelResource):
                     dry_run=dry_run,
                     **kwargs
                 )
-
             result.increment_row_result_total(row_result)
 
             if row_result.errors:
@@ -196,7 +200,7 @@ class CoursesResource(resources.ModelResource):
             with atomic_if_using_transaction(using_transactions):
                 self.after_import(dataset, result, using_transactions, dry_run, **kwargs)
         except Exception as e:
-            # logger.debug(e, exc_info=e)
+            logger.debug(e, exc_info=e)
             tb_info = traceback.format_exc()
             result.append_base_error(self.get_error_result_class()(e, tb_info))
             if raise_errors:

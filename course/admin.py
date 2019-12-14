@@ -10,7 +10,6 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
-from course.resources import CoursesResource
 import csv
 from django.http import HttpResponse
 from django.utils.safestring import mark_safe
@@ -56,7 +55,10 @@ from django.db.transaction import (
 import openpyxl
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
-
+from course.resources import CoursesResource
+from import_export.resources import ModelResource
+from student.models import Student
+from student.admin import StudentAdmin
 
 
 # Register your models here.
@@ -67,9 +69,8 @@ class TeacherChoiceField(forms.ModelChoiceField):
 
 
 class CourseAdmin(ImportExportModelAdmin):
-    # class CourseAdmin(ImportExportModelAdmin):
-    list_display = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'student_count', 'children_display'
-                    , 'class_time', 'class_time_calendar', 'class_time_begin_time',)
+    list_display = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'student_count',
+                    'class_time', 'class_time_calendar', 'class_time_begin_time',)
     search_fields = ('course_code',)
     fieldsets = (
         (None, {
@@ -83,11 +84,11 @@ class CourseAdmin(ImportExportModelAdmin):
         }),
     )
     filter_horizontal = ('students',)
-    # filter_vertical = ('students',)
     list_filter = (
         ('teacher', RelatedDropdownFilter),
         ('start_day', DateRangeFilter), ('end_day', DateTimeRangeFilter),
     )
+    resource_class = CoursesResource
 
     list_per_page = 20
     date_hierarchy = 'start_day'
@@ -154,14 +155,6 @@ class CourseAdmin(ImportExportModelAdmin):
         return response
 
     export_as_csv.short_description = "Export Selected"
-    """
-    def get_actions(self, request):
-        actions = super().get_actions(request)
-        if 'delete_selected' in actions:
-            del actions['delete_selected']
-        return actions
-    """
-
 
     def write_to_tmp_storage(self, import_file, input_format):
         tmp_storage = self.get_tmp_storage_class()()
@@ -177,10 +170,8 @@ class CourseAdmin(ImportExportModelAdmin):
             raise PermissionDenied
 
         context = self.get_import_context_data()
-        print("show context")
-        print(context)
-        import_formats = self.get_import_formats()
 
+        import_formats = self.get_import_formats()
         form_type = self.get_import_form()
         form_kwargs = self.get_form_kwargs(form_type, *args, **kwargs)
         form = form_type(import_formats,
@@ -192,20 +183,48 @@ class CourseAdmin(ImportExportModelAdmin):
             input_format = import_formats[
                 int(form.cleaned_data['input_format'])
             ]()
+            # input_format = Excel
             import_file = form.cleaned_data['import_file']
-            """
-            code change data file excel here
-            """
+
+            # first always write the uploaded file to disk as it may be a
+
             wb = openpyxl.load_workbook(import_file)
             worksheet = wb.active
-            worksheet.delete_rows(0, 9)
-            worksheet.delete_cols(1, 1)
-            worksheet.delete_cols(7, 6)
-            # worksheet.append(["student_code", "first_name", "last_name", "email", "username", "password"])
-            worksheet.insert_rows(1)
+            try:
+                t_course_code = worksheet.cell(row=6, column=4).value
+                t_course_code = t_course_code[5:]
+                t_course_name = worksheet.cell(row=6, column=1).value
+                t_course_name = t_course_name[8:]
+                t_start_day = ''
+                t_end_day = ''
+                t_teacher = worksheet.cell(row=7, column=4).value
+                t_teacher = t_teacher[15:]
+                t_students = ""
+                t_class_time = '2'
+                t_class_time_calendar = '2'
+                t_class_time_begin_time = '1'
+            except Exception as e:
+                return HttpResponse(
+                    _(u"<h1>%s encountered while trying to read file: %s</h1>"
+                      u"<h1> Make sure its a real import format</h1> " %
+                      (type(e).__name__, import_file.name)))
+            # create new wb for save data
+
+            count_data_row = worksheet.max_row
+            for x in range(10, 10 + count_data_row):
+                if worksheet.cell(row=x, column=2).value:
+                    t_students = t_students + "," + worksheet.cell(row=x, column=2).value
+
+            wb.create_sheet(title="Sheet1", index=0)
+            us_ws = wb.active
+            us_ws.append(["course_code", "course_name", "start_day", "end_day", "teacher", "students", "class_time",
+                          "class_time_calendar", "class_time_begin_time"])
+            # add row here
+            us_ws.append([t_course_code, t_course_name, t_start_day, t_end_day, t_teacher, t_students, t_class_time,
+                          t_class_time_calendar, t_class_time_begin_time])
+
             wb.save(import_file)
-            # check
-            # first always write the uploaded file to disk as it may be a
+            # ===============================================================================================
             # memory file or else based on settings upload handlers
             tmp_storage = self.write_to_tmp_storage(import_file, input_format)
 
@@ -216,10 +235,6 @@ class CourseAdmin(ImportExportModelAdmin):
                 if not input_format.is_binary() and self.from_encoding:
                     data = force_text(data, self.from_encoding)
                 dataset = input_format.create_dataset(data)
-                dataset.headers = ['student_code', 'first_name', 'email', 'username', 'password',
-                                   'comment']
-                print("show dataset")
-                print(dataset)
             except UnicodeDecodeError as e:
                 return HttpResponse(_(u"<h1>Imported file has a wrong encoding: %s</h1>" % e))
             except Exception as e:
@@ -232,7 +247,6 @@ class CourseAdmin(ImportExportModelAdmin):
 
             # prepare additional kwargs for import_data, if needed
             imp_kwargs = self.get_import_data_kwargs(request, form=form, *args, **kwargs)
-
             result = resource.import_data(dataset, dry_run=True,
                                           raise_errors=False,
                                           file_name=import_file.name,
@@ -259,9 +273,7 @@ class CourseAdmin(ImportExportModelAdmin):
         context['title'] = _("Import")
         context['form'] = form
         context['opts'] = self.model._meta
-        # context['fields'] = [f.column_name for f in resource.get_user_visible_fields()]
-        context['fields'] = ['student_code', 'first_name', 'email', 'username', 'password',
-                             'comment']
+        context['fields'] = [f.column_name for f in resource.get_user_visible_fields()]
         request.current_app = self.admin_site.name
         return TemplateResponse(request, [self.import_template_name],
                                 context)

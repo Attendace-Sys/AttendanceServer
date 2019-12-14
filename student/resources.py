@@ -12,7 +12,7 @@ import csv
 from django.http import HttpResponse
 from django.utils.safestring import mark_safe
 from datetime import datetime
-from import_export.resources import Resource, DeclarativeMetaclass
+from import_export.resources import Resource, DeclarativeMetaclass, ModelResource
 from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin, messages
@@ -41,38 +41,7 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 import traceback
 from copy import deepcopy
 import tablib
-
-"""
 import logging
-
-
-from collections import OrderedDict
-
-from diff_match_patch import diff_match_patch
-import django
-from django.conf import settings
-
-from django.core.management.color import no_style
-
-from django.db.models.fields.related import ForeignObjectRel
-from django.db.models.query import QuerySet
-
-from django.utils.encoding import force_text
-from django.utils.safestring import mark_safe
-
-if django.VERSION[0] >= 3:
-    from django.core.exceptions import FieldDoesNotExist
-else:
-    from django.db.models.fields import FieldDoesNotExist
-from django.db import transaction
-import tablib
-import warnings
-from importlib import import_module
-from import_export.formats.base_formats import *
-from import_export import *
-from import_export.formats import *
-from logging import *
-"""
 
 
 class StudentsResource(resources.ModelResource):
@@ -136,10 +105,8 @@ class StudentsResource(resources.ModelResource):
             row_result.validation_error = e
         except Exception as e:
             row_result.import_type = RowResult.IMPORT_TYPE_ERROR
-            # There is no point logging a transaction error for each row
-            # when only the original error is likely to be relevant
-            # if not isinstance(e, TransactionManagementError):
-            #    logger.debug(e, exc_info=e)
+            if not isinstance(e, TransactionManagementError):
+                logger.debug(e, exc_info=e)
             tb_info = traceback.format_exc()
             row_result.errors.append(self.get_error_result_class()(e, tb_info, row))
         return row_result
