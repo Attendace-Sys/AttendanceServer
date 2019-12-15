@@ -84,6 +84,7 @@ class CourseAdmin(ImportExportModelAdmin):
             'classes': ('collapse',),
         }),
     )
+    readonly_fields = []
     filter_horizontal = ('students',)
     list_filter = (
         ('teacher', RelatedDropdownFilter),
@@ -94,6 +95,11 @@ class CourseAdmin(ImportExportModelAdmin):
     list_per_page = 20
     date_hierarchy = 'start_day'
     raw_id_fields = ["teacher", ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # editing an existing object
+            return self.readonly_fields + ['course_code', ]
+        return self.readonly_fields
 
     @staticmethod
     def duaration(obj):

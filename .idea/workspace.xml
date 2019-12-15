@@ -6,11 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoAPI/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/admin.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,8 +153,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Django server.DjangoAPI" />
       <item itemvalue="Python.pathlib" />
+      <item itemvalue="Django server.DjangoAPI" />
     </list>
     <recent_temporary>
       <list>

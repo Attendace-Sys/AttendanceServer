@@ -54,6 +54,10 @@ from django.db.transaction import (
 import openpyxl
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
+from django.contrib.admin.widgets import AdminFileWidget
+from django.db import models
+
+
 
 
 class ImageInline(admin.TabularInline):
@@ -70,7 +74,7 @@ class StudentAdmin(ImportExportModelAdmin, ):
     list_display = (
         'student_code', 'get_full_name', 'email', 'username', 'password',
         'comment',)
-
+    readonly_fields = []
     list_filter = ('student_code',)
     search_fields = ('student_code',)
     inlines = (ImageInline,)
@@ -84,6 +88,11 @@ class StudentAdmin(ImportExportModelAdmin, ):
             'classes': ('collapse',),
         }),
     )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # editing an existing object
+            return self.readonly_fields + ['student_code', ]
+        return self.readonly_fields
 
     def get_full_name(self, obj):
         return obj.get_full_name()
@@ -172,7 +181,8 @@ class StudentAdmin(ImportExportModelAdmin, ):
                 return HttpResponse(_(u"<h1>Imported file has a wrong encoding: %s</h1>" % e))
             except Exception as e:
                 return HttpResponse(
-                    _(u"<h1>%s encountered while trying to read file: %s Try to import another file</h1>" % (type(e).__name__, import_file.name)))
+                    _(u"<h1>%s encountered while trying to read file: %s Try to import another file</h1>" % (
+                        type(e).__name__, import_file.name)))
 
             # prepare kwargs for import data, if needed
             res_kwargs = self.get_import_resource_kwargs(request, form=form, *args, **kwargs)
