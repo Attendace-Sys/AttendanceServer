@@ -169,7 +169,7 @@ AUTH_USER_MODEL = 'teacher.User'
 
 LOGIN_REDIRECT_URL = ''
 LOGOUT_REDIRECT_URL = ''
-
+DATETIME_FORMAT = '%d-%m-%Y'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',

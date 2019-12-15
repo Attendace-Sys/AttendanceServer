@@ -2,6 +2,8 @@ from django.db import models
 from student.models import Student
 from teacher.models import Teacher
 from django.core.validators import MaxValueValidator, MinValueValidator
+import datetime
+from datetime import timedelta
 
 
 # Create your models here.
@@ -81,13 +83,53 @@ class Course(models.Model):
         ]
     )
 
+    def create_schedule(self, *args, **kwargs):
+        # get begin day
+        day_begin = self.start_day
+        day_end = self.end_day
+        day_of_week = int(self.day_of_week)
+        time_start_of_course = self.time_start_of_course
+        time_duration = self.time_duration
+        date = day_begin.date()
+        if date.weekday() <= day_of_week:
+            date = date + timedelta(days=(day_of_week - date.weekday()))
+        else:
+            date = date + timedelta(days=(7 - (date.weekday() - day_of_week)))
+        begin = date
+        # get end day
+        date = day_end.date()
+        if date.weekday() >= day_of_week:
+            date = date - timedelta(days=(day_of_week - date.weekday()))
+        else:
+            date = date - timedelta(days=(7 - (day_of_week - date.weekday())))
+        end = date
+        # create schedule
+        schedule_number_of_day_count = 1
+        date_schedule = begin
+        while date_schedule <= end:
+            schedule = Schedule(course=self)
+            schedule.schedule_code = self.course_code + str(schedule_number_of_day_count)
+            schedule.schedule_date = date_schedule
+            schedule.schedule_number_of_day = schedule_number_of_day_count
+            schedule_number_of_day_count = schedule_number_of_day_count + 1
+            schedule.save()
+            date_schedule += timedelta(days=7)
+
+    def save(self, *args, **kwargs):
+        instance = super(Course, self).save(*args, **kwargs)
+        if self.pk:
+            # do when create
+            if self.start_day is not None and self.end_day is not None and ( self.start_day <= self.end_day):
+                self.create_schedule(self, *args, **kwargs)
+        return instance
+
     class Meta:
         verbose_name_plural = 'Quản lý Lớp học'
 
 
 class Schedule(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
-    schedule_code = models.CharField(max_length=20, null=False, primary_key=True)
+    schedule_code = models.CharField(max_length=30, null=False, primary_key=True)
     schedule_date = models.DateTimeField(auto_now_add=True, null=False)
     schedule_number_of_day = models.IntegerField(null=False)
 
@@ -102,6 +144,9 @@ class Attendance(models.Model):
     absent_status = models.BooleanField(default=False)
     # save to student_name folder
     image_data = models.FileField(upload_to='media/students/images/}', blank=False, null=False)
+
+    def save(self, *args, **kwargs):
+        super(ScheduleImagesData, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = 'Quản lý điểm danh'

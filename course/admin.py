@@ -295,10 +295,10 @@ class ScheduleAdmin(admin.ModelAdmin):
     inlines = (ScheduleImagesDataInline,)
     fieldsets = (
         (None, {
-            'fields': ('schedule_code', 'course', 'schedule_number_of_day')
+            'fields': ('course',  'schedule_number_of_day')
         }),
-
     )
+    readonly_fields = ['schedule_code', 'course', 'schedule_date', 'schedule_number_of_day']
     # filter_horizontal = ('students',)
     list_filter = (
         ('course', RelatedDropdownFilter),
@@ -307,6 +307,11 @@ class ScheduleAdmin(admin.ModelAdmin):
 
     list_per_page = 20
     raw_id_fields = ["course", ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:  # editing an existing object
+            return self.readonly_fields + ['schedule_code', 'course', 'schedule_date', 'schedule_number_of_day' ]
+        return self.readonly_fields
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'course':

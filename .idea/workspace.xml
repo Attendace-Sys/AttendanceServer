@@ -6,17 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoAPI/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/apps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/migrations/0002_auto_20191213_2136.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0002_auto_20191214_1719.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0003_auto_20191214_1918.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/resources.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/migrations/0002_auto_20191214_1918.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/migrations/0002_auto_20191214_1918.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -210,7 +210,7 @@
       <workItem from="1576132323842" duration="7087000" />
       <workItem from="1576140484329" duration="10154000" />
       <workItem from="1576228396879" duration="43554000" />
-      <workItem from="1576395253274" duration="7391000" />
+      <workItem from="1576395253274" duration="21632000" />
     </task>
     <servers />
   </component>
