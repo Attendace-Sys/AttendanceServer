@@ -42,6 +42,7 @@ import traceback
 from copy import deepcopy
 import tablib
 import logging
+logger = logging.getLogger(__name__)
 
 
 class StudentsResource(resources.ModelResource):
@@ -56,7 +57,6 @@ class StudentsResource(resources.ModelResource):
         report_skipped = False
 
     def import_row(self, row, instance_loader, using_transactions=True, dry_run=False, **kwargs):
-
         row_result = self.get_row_result_class()()
         try:
             self.before_import_row(row, **kwargs)
@@ -136,33 +136,28 @@ class StudentsResource(resources.ModelResource):
         # get dataset.header to set import header
         result.diff_headers = ['student_code', 'first_name', 'email', 'username', 'password',
                                'comment']
-
         result.total_rows = len(dataset)
 
         if using_transactions:
-            # when transactions are used we want to create/update/delete object
-            # as transaction will be rolled back if dry_run is set
             sp1 = savepoint()
 
         try:
             with atomic_if_using_transaction(using_transactions):
                 self.before_import(dataset, using_transactions, dry_run, **kwargs)
         except Exception as e:
-            # logger.debug(e, exc_info=e)
+            logger.debug(e, exc_info=e)
             tb_info = traceback.format_exc()
             result.append_base_error(self.get_error_result_class()(e, tb_info))
             if raise_errors:
                 raise
 
         instance_loader = self._meta.instance_loader_class(self, dataset)
-        # Update the total in case the dataset was altered by before_import()
         result.total_rows = len(dataset)
         dataset.headers = result.diff_headers
         result.add_dataset_headers(result.diff_headers)
 
         if collect_failed_rows:
             result.add_dataset_headers(result.diff_headers)
-        # for i, row in enumerate(dataset.dict, 1):
         for i, row in enumerate(dataset.dict, 1):
 
             with atomic_if_using_transaction(using_transactions):
@@ -195,7 +190,7 @@ class StudentsResource(resources.ModelResource):
             with atomic_if_using_transaction(using_transactions):
                 self.after_import(dataset, result, using_transactions, dry_run, **kwargs)
         except Exception as e:
-            # logger.debug(e, exc_info=e)
+            logger.debug(e, exc_info=e)
             tb_info = traceback.format_exc()
             result.append_base_error(self.get_error_result_class()(e, tb_info))
             if raise_errors:

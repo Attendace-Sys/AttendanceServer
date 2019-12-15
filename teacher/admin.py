@@ -36,7 +36,7 @@ class TeacherAdmin(ImportExportModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'teacher_code', 'first_name', 'last_name', 'email', 'teacher_image',
+                'teacher_code', 'first_name', 'email', 'teacher_image',
                 'username', 'password', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions', ),
         }),
         ('Advance options', {

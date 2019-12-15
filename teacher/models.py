@@ -30,7 +30,14 @@ class Teacher(User):
         """
 
     class Meta:
-        verbose_name_plural = 'Teachers'
+        verbose_name_plural = 'Quản lý giáo viên'
 
     def __str__(self):
         return self.first_name + self.last_name
+
+    def save(self, *args, **kwargs):
+        # default username and password
+        self.last_name = ""
+        self.username = "" + self.teacher_code
+        self.password = "" + self.teacher_code
+        super(Teacher, self).save(*args, **kwargs)

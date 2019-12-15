@@ -26,7 +26,10 @@ class Student(User):
     comment = models.CharField(max_length=2000, null=True, blank=True)
 
     def __str__(self):
-        return self.first_name + self.last_name
+        return "" + self.first_name + self.last_name
+
+    def get_student_code(self):
+        return str(self.student_code)
 
     def get_absolute_url(self):
         return reverse('student:student_edit', kwargs={'student_code': self.student_code})
@@ -35,14 +38,14 @@ class Student(User):
         # default username and password
         if self.student_video_data is None:
             self.student_video_data = ""
-        self.email = "" + self.student_code + "@gm.uit.edu.vn"
+        self.email = "" + self.get_student_code() + "@gm.uit.edu.vn"
         self.last_name = ""
-        self.username = "" + self.student_code
-        self.password = "" + self.student_code
+        self.username = "" + str(self.student_code)
+        self.password = "" + str(self.student_code)
         super(Student, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name_plural = 'Students'
+        verbose_name_plural = 'Quản lý học sinh'
 
 
 class StudentImagesData(models.Model):

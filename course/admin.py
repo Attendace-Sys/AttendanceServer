@@ -5,7 +5,7 @@ from .models import Teacher
 from django.db.models import Count
 from student.models import Student, StudentImagesData
 from django.utils import timezone
-from course.models import Course
+from course.models import Course, Schedule, Attendance, ScheduleImagesData
 from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
 from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 from import_export import resources
@@ -69,13 +69,14 @@ class TeacherChoiceField(forms.ModelChoiceField):
 
 
 class CourseAdmin(ImportExportModelAdmin):
-    list_display = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'student_count',
-                    'class_time', 'class_time_calendar', 'class_time_begin_time',)
+    list_display = (
+        'course_code', 'course_name', 'children_display', 'start_day', 'end_day', 'teacher', 'student_count',
+        'day_of_week', 'time_start_of_course', 'duaration',)
     search_fields = ('course_code',)
     fieldsets = (
         (None, {
-            'fields': ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'class_time',
-                       'class_time_calendar', 'class_time_begin_time',)
+            'fields': ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'day_of_week',
+                       'time_start_of_course', 'time_duration',)
         }),
         ('Advance options', {
             'fields': ('students',),
@@ -94,6 +95,13 @@ class CourseAdmin(ImportExportModelAdmin):
     date_hierarchy = 'start_day'
     raw_id_fields = ["teacher", ]
 
+    @staticmethod
+    def duaration(obj):
+        # return obj.students.count()
+        return " " + str(obj.time_duration) + " tiết "
+
+    duaration.short_description = "Time duration"
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'teacher':
             return TeacherChoiceField(queryset=Teacher.objects.all())
@@ -101,23 +109,11 @@ class CourseAdmin(ImportExportModelAdmin):
 
     def children_display(self, obj):
         return ", ".join([
-            students.student_code for students in obj.students.all()
+            # students.student_code for students in obj.students.all()
+            students.__str__() for students in obj.students.all()
         ])
 
     children_display.short_description = "Students List"
-
-    @staticmethod
-    def children_display(obj):
-        display_text = ", ".join([
-            "<a href={}>{}</a>".format(
-                reverse('admin:{}_{}_change'.format(obj._meta.app_label, obj._meta.model_name),
-                        args=(students.pk,)),
-                students.__str__)
-            for students in obj.students.all()
-        ])
-        if display_text:
-            return mark_safe(display_text)
-        return "-"
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -213,7 +209,7 @@ class CourseAdmin(ImportExportModelAdmin):
             count_data_row = worksheet.max_row
             for x in range(10, 10 + count_data_row):
                 if worksheet.cell(row=x, column=2).value:
-                    t_students = t_students + "," + worksheet.cell(row=x, column=2).value
+                    t_students = t_students + "," + str(worksheet.cell(row=x, column=2).value)
 
             wb.create_sheet(title="Sheet1", index=0)
             us_ws = wb.active
@@ -235,6 +231,7 @@ class CourseAdmin(ImportExportModelAdmin):
                 if not input_format.is_binary() and self.from_encoding:
                     data = force_text(data, self.from_encoding)
                 dataset = input_format.create_dataset(data)
+                print(dataset)
             except UnicodeDecodeError as e:
                 return HttpResponse(_(u"<h1>Imported file has a wrong encoding: %s</h1>" % e))
             except Exception as e:
@@ -279,4 +276,76 @@ class CourseAdmin(ImportExportModelAdmin):
                                 context)
 
 
+class CourseChoiceField(forms.ModelChoiceField):
+    @staticmethod
+    def label_from_instance(obj):
+        return "{0}: {1} {2}".format(obj.course_code, obj.course_name, obj.teacher)
+
+
+class ScheduleImagesDataInline(admin.TabularInline):
+    model = ScheduleImagesData
+    fields = ('schedule', 'image_data'),
+    extra = 1
+    # classes = 'collapse',
+
+
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ('schedule_code', 'course', 'schedule_date', 'schedule_number_of_day')
+    search_fields = ('schedule_code',)
+    inlines = (ScheduleImagesDataInline,)
+    fieldsets = (
+        (None, {
+            'fields': ('schedule_code', 'course', 'schedule_number_of_day')
+        }),
+
+    )
+    # filter_horizontal = ('students',)
+    list_filter = (
+        ('course', RelatedDropdownFilter),
+        # ('start_day', DateRangeFilter), ('end_day', DateTimeRangeFilter),
+    )
+
+    list_per_page = 20
+    raw_id_fields = ["course", ]
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'course':
+            return CourseChoiceField(queryset=Course.objects.all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class ScheduleChoiceField(forms.ModelChoiceField):
+    @staticmethod
+    def label_from_instance(obj):
+        return "{0}: {1} {2}".format(obj.course, obj.schedule_code, obj.schedule_number_of_day)
+
+
+class AttendanceAdmin(admin.ModelAdmin):
+    list_display = ('attendance_code', 'student', 'schedule_code', 'absent_status', 'image_data')
+    search_fields = ('attendance_code',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('student', 'schedule_code', 'absent_status', 'image_data')
+        }),
+
+    )
+    # filter_horizontal = ('students',)
+    list_filter = (
+        ('student', RelatedDropdownFilter),
+        ('schedule_code', RelatedDropdownFilter),
+    )
+
+    list_per_page = 20
+    raw_id_fields = ["schedule_code", ]
+    """
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'course':
+            return CourseChoiceField(queryset=Course.objects.all())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    """
+
+
+admin.site.register(Attendance, AttendanceAdmin)
+admin.site.register(Schedule, ScheduleAdmin)
 admin.site.register(Course, CourseAdmin)

@@ -8,7 +8,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Course(models.Model):
     course_code = models.CharField(max_length=20, null=False, primary_key=True, blank=False)
-    course_name = models.CharField(default='Course name', max_length=50, null=False)
+    course_name = models.CharField(max_length=50, null=False)
     start_day = models.DateTimeField(null=True)
     end_day = models.DateTimeField(null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
@@ -20,7 +20,9 @@ class Course(models.Model):
     THU = '5'
     FRI = '6'
     SAT = '7'
-    class_time_choices = [
+    SUN = '8'
+    """
+    day_of_week_choices = [
         (MON, 'Monday'),
         (TUE, 'Tuesday'),
         (WED, 'Wednesday'),
@@ -28,8 +30,18 @@ class Course(models.Model):
         (FRI, 'Friday'),
         (SAT, 'Saturday'),
     ]
-    class_time = models.CharField(
-        choices=class_time_choices,
+    """
+    day_of_week_choices = [
+        (MON, 'Thứ hai'),
+        (TUE, 'Thứ ba'),
+        (WED, 'Thứ tư'),
+        (THU, 'Thứ năm'),
+        (FRI, 'Thứ sáu'),
+        (SAT, 'Thứ bảy'),
+        (SUN, 'Chủ nhật'),
+    ]
+    day_of_week = models.CharField(
+        choices=day_of_week_choices,
         default=MON,
         max_length=3
     )
@@ -44,24 +56,24 @@ class Course(models.Model):
     NINTH = '9'
     TENTH = '10'
 
-    class_time_calendar_choices = [
-        (FIRST, 'FIRST'),
-        (SECOND, 'SECOND'),
-        (THIRD, 'THIRD'),
-        (FOURTH, 'FOURTH'),
-        (FIFTH, 'FIFTH'),
-        (SIXTH, 'SIXTH'),
-        (SEVENTH, 'SEVENTH'),
-        (EIGHTH, 'EIGHTH'),
-        (NINTH, 'NINTH'),
-        (TENTH, 'TENTH'),
+    time_start_of_course_choices = [
+        (FIRST, 'Tiết 1'),
+        (SECOND, 'Tiết 2'),
+        (THIRD, 'Tiết 3'),
+        (FOURTH, 'Tiết 4'),
+        (FIFTH, 'Tiết 5'),
+        (SIXTH, 'Tiết 6'),
+        (SEVENTH, 'TIết 7'),
+        (EIGHTH, 'Tiết 8'),
+        (NINTH, 'Tiết 9'),
+        (TENTH, 'Tiết 10'),
     ]
-    class_time_calendar = models.CharField(
-        choices=class_time_calendar_choices,
+    time_start_of_course = models.CharField(
+        choices=time_start_of_course_choices,
         default=FIRST,
         max_length=10
     )
-    class_time_begin_time = models.IntegerField(
+    time_duration = models.IntegerField(
         default=1,
         validators=[
             MaxValueValidator(10),
@@ -70,7 +82,7 @@ class Course(models.Model):
     )
 
     class Meta:
-        verbose_name_plural = 'Courses List'
+        verbose_name_plural = 'Quản lý Lớp học'
 
 
 class Schedule(models.Model):
@@ -80,7 +92,7 @@ class Schedule(models.Model):
     schedule_number_of_day = models.IntegerField(null=False)
 
     class Meta:
-        verbose_name_plural = 'Schedule'
+        verbose_name_plural = 'Quản lý buổi học'
 
 
 class Attendance(models.Model):
@@ -90,3 +102,31 @@ class Attendance(models.Model):
     absent_status = models.BooleanField(default=False)
     # save to student_name folder
     image_data = models.FileField(upload_to='media/students/images/}', blank=False, null=False)
+
+    class Meta:
+        verbose_name_plural = 'Quản lý điểm danh'
+
+
+class ScheduleImagesData(models.Model):
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
+    """
+    def path_and_rename(self, name):
+        filename = ''
+        name, ext = os.path.split(self.image_data.name)
+        # get filename
+        if self.student:
+            filename = 'students/{0}/images/{1}_{2}'.format(self.student, self.student, self.image_data.name)
+        else:
+            filename = 'students/images/{0}{1}'.format(name, self.image_data.name)
+        # return the whole path to the file
+        return filename
+    """
+    # save picture to student folder
+    image_data = models.FileField(upload_to='media/', blank=False, null=False)
+    image_date_upload = models.DateTimeField(auto_now_add=True, null=True)
+
+    def save(self, *args, **kwargs):
+        super(ScheduleImagesData, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.image_data.name

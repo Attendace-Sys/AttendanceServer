@@ -47,21 +47,19 @@ from student.models import Student
 from student.admin import StudentAdmin
 import logging
 from django.db import transaction
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class CoursesResource(resources.ModelResource):
-    # students = fields.Field(attribute='students', widget=ManyToManyWidget(students), column_name='students')
-    students = fields.Field(
-        attribute='students',
-        widget=ManyToManyWidget(model=Student, separator=',', field='student_code'),
-    )
+    student = fields.Field(attribute='students', widget=ManyToManyWidget(model=Student, field='student_code'),
+                           column_name='Student')
 
     class Meta:
         model = Course
-        fields = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'students', 'class_time',
-                  'class_time_calendar', 'class_time_begin_time')
+        fields = ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'student', 'day_of_week',
+                  'time_start_of_course', 'time_duration')
         export_order = fields
         import_id_fields = ('course_code',)
         skip_unchanged = True
@@ -97,7 +95,8 @@ class CoursesResource(resources.ModelResource):
                     # validate_instance(), where they can be combined with model
                     # instance validation errors if necessary
                     import_validation_errors = e.update_error_dict(import_validation_errors)
-                if self.skip_row(instance, original):
+                # if self.skip_row(instance, original):
+                if 1 == 2:
                     row_result.import_type = RowResult.IMPORT_TYPE_SKIP
                 else:
                     self.validate_instance(instance, import_validation_errors)
@@ -116,8 +115,6 @@ class CoursesResource(resources.ModelResource):
             row_result.validation_error = e
         except Exception as e:
             row_result.import_type = RowResult.IMPORT_TYPE_ERROR
-            # There is no point logging a transaction error for each row
-            # when only the original error is likely to be relevant
             if not isinstance(e, TransactionManagementError):
                 logger.debug(e, exc_info=e)
             tb_info = traceback.format_exc()
