@@ -108,7 +108,7 @@ class Course(models.Model):
         date_schedule = begin
         while date_schedule <= end:
             schedule = Schedule(course=self)
-            schedule.schedule_code = self.course_code + str(schedule_number_of_day_count)
+            schedule.schedule_code = self.course_code + str(date_schedule) + str(schedule_number_of_day_count)
             schedule.schedule_date = date_schedule
             schedule.schedule_number_of_day = schedule_number_of_day_count
             schedule_number_of_day_count = schedule_number_of_day_count + 1
@@ -146,7 +146,7 @@ class Attendance(models.Model):
     image_data = models.FileField(upload_to='media/students/images/}', blank=False, null=False)
 
     def save(self, *args, **kwargs):
-        super(ScheduleImagesData, self).save(*args, **kwargs)
+        super(Attendance, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = 'Quản lý điểm danh'

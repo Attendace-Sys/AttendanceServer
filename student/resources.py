@@ -195,7 +195,6 @@ class StudentsResource(resources.ModelResource):
             result.append_base_error(self.get_error_result_class()(e, tb_info))
             if raise_errors:
                 raise
-
         if using_transactions:
             if dry_run or result.has_errors():
                 savepoint_rollback(sp1)
