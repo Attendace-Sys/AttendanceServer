@@ -69,3 +69,13 @@ def teacher_delete(request, teacher_code, template_name='teacher_confirm_delete.
         return redirect('teacher:teacher_list')
     return render(request, template_name, {'object': teacher})
 
+
+def register(request, *args, **kwargs):
+    form = TeacherFormCreationForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('/login')
+    context = {
+        'form': form
+    }
+    return render(request, "register.html", context)

@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 class TeacherForm(ModelForm):
     class Meta:
         model = Teacher
-        fields = ['teacher_code', 'first_name', 'email', 'teacher_image', 'username', 'password',
+        fields = ['teacher_code', 'first_name', 'email', 'teacher_image', 'password',
                   'date_joined']
 
     def save(self, commit=True):
@@ -19,10 +19,10 @@ class TeacherForm(ModelForm):
 class TeacherFormCreationForm(UserCreationForm):
     class Meta:
         model = Teacher
-        fields = ('username', 'email')
+        fields = ('teacher_code', 'first_name', 'email')
 
 
 class TeacherFormChangeForm(UserChangeForm):
     class Meta:
         model = Teacher
-        fields = ('username', 'email')
+        fields = ('teacher_code', 'first_name', 'email')
