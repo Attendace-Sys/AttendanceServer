@@ -30,7 +30,7 @@ class ImageInline(admin.TabularInline):
 
 class TeacherAdmin(ImportExportModelAdmin):
     list_display = ('teacher_code', 'get_full_name', 'email', 'username', 'password', 'date_joined',
-                    'teacher_image_show', 'days_since_creation', 'is_staff', 'is_superuser', 'date_of_birth')
+                    'teacher_image_show', 'days_since_creation', 'is_staff', 'is_superuser', )
     search_fields = ('teacher_code',)
     date_created = 'date_joined'
     list_per_page = 10
@@ -41,7 +41,7 @@ class TeacherAdmin(ImportExportModelAdmin):
         (None, {
             'fields': (
                 'teacher_code', 'first_name', 'email', 'teacher_image',
-                'username', 'password', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions', 'date_of_birth'),
+                'username', 'password', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions', ),
         }),
         ('Advance options', {
             'fields': ('date_joined', 'teacher_full_image_show'),
@@ -119,7 +119,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'date_of_birth', 'is_staff')
+        fields = ('username', 'email', 'is_staff')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -147,7 +147,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'date_of_birth', 'is_active', 'is_admin', 'is_staff')
+        fields = ('email', 'password', 'is_active', 'is_admin', 'is_staff')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -164,11 +164,10 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'date_of_birth', 'is_admin', 'is_staff')
+    list_display = ('email',  'is_admin', 'is_staff')
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('date_of_birth',)}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -176,7 +175,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'date_of_birth', 'password1', 'password2', 'is_staff'),
+            'fields': ('email', 'password1', 'password2', 'is_staff'),
         }),
     )
     search_fields = ('email',)
@@ -185,6 +184,5 @@ class UserAdmin(BaseUserAdmin):
 
 
 # Register your models Teacher.
-admin.site.register(User, UserAdmin)
 admin.site.register(Teacher, TeacherAdmin)
 admin.site.unregister(Group)
