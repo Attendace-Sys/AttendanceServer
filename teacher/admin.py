@@ -30,7 +30,7 @@ class ImageInline(admin.TabularInline):
 
 class TeacherAdmin(ImportExportModelAdmin):
     list_display = ('teacher_code', 'get_full_name', 'email', 'username', 'password', 'date_joined',
-                    'teacher_image_show', 'days_since_creation', 'is_staff', 'is_superuser', )
+                    'days_since_creation', 'is_staff', 'is_superuser', )
     search_fields = ('teacher_code',)
     date_created = 'date_joined'
     list_per_page = 10
@@ -41,7 +41,7 @@ class TeacherAdmin(ImportExportModelAdmin):
         (None, {
             'fields': (
                 'teacher_code', 'first_name', 'email', 'teacher_image',
-                'username', 'password', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions', ),
+                'password', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions', ),
         }),
         ('Advance options', {
             'fields': ('date_joined', 'teacher_full_image_show'),
@@ -63,13 +63,14 @@ class TeacherAdmin(ImportExportModelAdmin):
 
     @staticmethod
     def teacher_image_show(teacher):
-        return mark_safe('<img src="{url}" width="{width}" height={height} />'.format(
-            url=teacher.teacher_image.url,
-            # width=teacher.teacher_image.width,
-            width=80,
-            # height=teacher.teacher_image.height,
-            height=80
-        )
+        if teacher.teacher_image.url is not None:
+            return mark_safe('<img src="{url}" width="{width}" height={height} />'.format(
+                url=teacher.teacher_image.url,
+                # width=teacher.teacher_image.width,
+                width=80,
+                # height=teacher.teacher_image.height,
+                height=80
+            )
         )
 
     @staticmethod
@@ -147,7 +148,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'is_active', 'is_admin', 'is_staff')
+        fields = ('username', 'email', 'password', 'is_active', 'is_admin', 'is_staff')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -164,18 +165,18 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email',  'is_admin', 'is_staff')
+    list_display = ('username', 'password', 'email',  'is_admin', 'is_staff')
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_admin', 'is_staff')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff'),
+            'fields': ('username', 'email', 'password1', 'password2', 'is_staff'),
         }),
     )
     search_fields = ('email',)
@@ -184,5 +185,6 @@ class UserAdmin(BaseUserAdmin):
 
 
 # Register your models Teacher.
+admin.site.register(User, UserAdmin)
 admin.site.register(Teacher, TeacherAdmin)
 admin.site.unregister(Group)

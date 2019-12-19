@@ -5,11 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/teacher/templates/register.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoAPI/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0002_auto_20191216_1515.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/migrations/0002_user_is_staff.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/migrations/0003_auto_20191216_1934.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/migrations/0004_auto_20191217_1100.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +213,10 @@
       <workItem from="1576395253274" duration="25516000" />
       <workItem from="1576483197845" duration="3872000" />
       <workItem from="1576499456884" duration="3083000" />
-      <workItem from="1576552197849" duration="9273000" />
+      <workItem from="1576552197849" duration="9885000" />
+      <workItem from="1576576807885" duration="4603000" />
+      <workItem from="1576727922747" duration="3953000" />
+      <workItem from="1576768096163" duration="7583000" />
     </task>
     <servers />
   </component>
@@ -291,10 +301,10 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="461" y="166" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1576115446854" />
-    <state x="656" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1576552230111">
+    <state x="656" y="348" key="com.intellij.ide.util.TipDialog" timestamp="1576727928204">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="656" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1576552230111" />
+    <state x="656" y="348" key="com.intellij.ide.util.TipDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1576727928204" />
     <state x="769" y="441" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1576055292878">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
