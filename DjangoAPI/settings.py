@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'student.apps.StudentConfig',
     'teacher.apps.TeacherConfig',
     'course.apps.CourseConfig',
+    'User.apps.UserConfig',
     'theme',
     'django_admin_listfilter_dropdown',
     'rangefilter',
@@ -106,7 +107,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysqldatabase',
         'USER': 'root',
-        'PASSWORD': 'Linhkute123',
+        'PASSWORD': 'Lethimylinh123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
@@ -165,7 +166,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:9000"
 ]
 
-AUTH_USER_MODEL = 'teacher.User'
+AUTH_USER_MODEL = 'User.User'
 
 LOGIN_REDIRECT_URL = ''
 LOGOUT_REDIRECT_URL = ''

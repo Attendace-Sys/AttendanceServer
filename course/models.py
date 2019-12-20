@@ -111,9 +111,11 @@ class Course(models.Model):
             schedule = Schedule(course=self)
             schedule.schedule_code = \
                 self.course_code + "-" + str(date_schedule) + "-" + str(schedule_number_of_day_count)
-            schedule.date_schedule = date_schedule
+            # schedule.date_schedule = date_schedule
             schedule.schedule_number_of_day = schedule_number_of_day_count
             schedule_number_of_day_count = schedule_number_of_day_count + 1
+            if schedule.schedule_date is None:
+                schedule.schedule_date = date_schedule
             schedule.save()
             date_schedule = date_schedule + timedelta(days=7)
 

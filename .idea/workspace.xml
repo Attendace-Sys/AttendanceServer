@@ -5,19 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/User/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoAPI/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/migrations/0002_auto_20191216_1515.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0002_auto_20191219_2209.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0003_auto_20191219_2248.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0004_auto_20191219_2249.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0005_auto_20191219_2258.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0006_auto_20191219_2302.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/migrations/0007_auto_20191219_2347.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/migrations/0002_user_is_staff.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/migrations/0003_auto_20191216_1934.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/migrations/0004_auto_20191217_1100.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/views.py" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,6 +60,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.django.DjangoModulesConfigurable" />
     <property name="ts.external.directory.path" value="C:\Code\dj\DjangoAPI\frontend\node_modules\typescript\lib" />
   </component>
@@ -70,6 +78,18 @@
       <recent name="D:\DjangoAPI\frontend\src\app\services" />
       <recent name="D:\DjangoAPI\frontend\src\app\shared" />
     </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager" selected="Python.pathlib">
     <configuration default="true" type="DjangoTestsConfigurationType">
@@ -171,18 +191,6 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
-  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -217,6 +225,9 @@
       <workItem from="1576576807885" duration="4603000" />
       <workItem from="1576727922747" duration="3953000" />
       <workItem from="1576768096163" duration="7583000" />
+      <workItem from="1576810407848" duration="1753000" />
+      <workItem from="1576812179008" duration="300000" />
+      <workItem from="1576812578447" duration="1575000" />
     </task>
     <servers />
   </component>

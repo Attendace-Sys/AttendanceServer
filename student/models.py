@@ -1,5 +1,5 @@
 from django.db import models
-from teacher.models import User
+from User.models import User
 import os
 from django.urls import reverse
 from django.conf import settings
