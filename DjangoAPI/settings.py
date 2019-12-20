@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_view_permission',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -191,3 +192,8 @@ PASSWORD_HASHERS = [
 ]
 
 # DEFAULT_CHARSET = 'utf-8mb4'
+ADMIN_VIEW_PERMISSION_MODELS = [
+    # 'User.User',
+    'auth.User',
+    'auth.student'
+]

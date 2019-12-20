@@ -19,7 +19,9 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import User
 # Register your models here.
-
+from django.contrib.auth.models import Permission
+from django.contrib import admin
+admin.site.register(Permission)
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -57,7 +59,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'is_active', 'is_admin', 'is_staff')
+        fields = ('username', 'email', 'password', 'is_active', 'is_staff')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -74,23 +76,25 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('username', 'password', 'email',  'is_admin', 'is_staff')
-    list_filter = ('is_admin',)
+    #list_display = ('username', 'password', 'email',  'is_staff')
+    list_display = ('username', 'password', 'email', 'date_joined',
+                    'is_staff', 'is_superuser','is_active', )
+    filter_horizontal = ('groups', 'user_permissions')
+    list_filter = ('is_staff',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_admin', 'is_staff')}),
+        ('Permissions', {'fields': ('is_staff', 'is_superuser','is_active', 'groups', 'user_permissions',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_staff'),
+            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_superuser','is_active', 'groups', 'user_permissions'),
         }),
     )
     search_fields = ('email',)
     ordering = ('email',)
-    filter_horizontal = ()
 
 
 # Register your models Teacher.

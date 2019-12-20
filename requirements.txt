@@ -13,3 +13,4 @@ django-summernote==0.8.11.4
 django-admin-list-filter-dropdown==1.0.3
 django-admin-rangefilter==0.5.2
 django-import-export
+django-admin-view-permission

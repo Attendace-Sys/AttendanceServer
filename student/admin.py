@@ -56,7 +56,7 @@ from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db import models
-
+from admin_view_permission.admin import AdminViewPermissionAdminSite
 
 
 
@@ -67,7 +67,7 @@ class ImageInline(admin.TabularInline):
     classes = 'collapse',
 
 
-class StudentAdmin(ImportExportModelAdmin, ):
+class StudentAdmin(ImportExportModelAdmin, AdminViewPermissionAdminSite):
     labels = {
         'first_name': 'Full Name'
     }
