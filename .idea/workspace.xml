@@ -5,15 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/User/serializers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/User/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/User/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/User/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/User/registration.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/registration/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoAPI/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoAPI/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/User/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/User/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/User/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/User/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/User/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/User/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/User/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/User/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/admin.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,7 +51,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/course" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/User" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
@@ -54,31 +60,20 @@
     <property name="ts.external.directory.path" value="C:\Code\dj\DjangoAPI\frontend\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Code\AttendanceServer\User" />
+      <recent name="C:\Code\AttendanceServer\templates" />
+      <recent name="C:\Code\AttendanceServer\templates\User" />
+      <recent name="C:\Code\AttendanceServer" />
+      <recent name="C:\Code\AttendanceServer\course" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Code\AttendanceServer\templates\User" />
       <recent name="C:\Code\AttendanceServer\student" />
       <recent name="C:\Code\dj\DjangoAPI\frontend\src\app\services\upload_services" />
       <recent name="C:\Code\dj\DjangoAPI\frontend\src\app\services\notification_services" />
       <recent name="D:\DjangoAPI\frontend\src\assets" />
-      <recent name="D:\DjangoAPI\frontend\src\app\shared\assets" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Code\AttendanceServer\course" />
-      <recent name="C:\Code\dj\DjangoAPI\frontend\src\assets" />
-      <recent name="D:\DjangoAPI\frontend\src\app\services" />
-      <recent name="D:\DjangoAPI\frontend\src\app\shared" />
-    </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Python.pathlib">
     <configuration default="true" type="DjangoTestsConfigurationType">
@@ -180,6 +175,18 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -217,6 +224,8 @@
       <workItem from="1576810407848" duration="1753000" />
       <workItem from="1576812179008" duration="300000" />
       <workItem from="1576812578447" duration="9362000" />
+      <workItem from="1576863512686" duration="3423000" />
+      <workItem from="1576868197481" duration="15180000" />
     </task>
     <servers />
   </component>

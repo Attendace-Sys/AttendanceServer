@@ -21,7 +21,9 @@ from .models import User
 # Register your models here.
 from django.contrib.auth.models import Permission
 from django.contrib import admin
+
 admin.site.register(Permission)
+
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -76,21 +78,22 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    #list_display = ('username', 'password', 'email',  'is_staff')
+    # list_display = ('username', 'password', 'email',  'is_staff')
     list_display = ('username', 'password', 'email', 'date_joined',
-                    'is_staff', 'is_superuser','is_active', )
+                    'is_staff', 'is_superuser', 'is_active',)
     filter_horizontal = ('groups', 'user_permissions')
     list_filter = ('is_staff',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_superuser','is_active', 'groups', 'user_permissions',)}),
+        ('Permissions', {'fields': ('is_staff', 'is_superuser', 'is_active', 'groups', 'user_permissions',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_superuser','is_active', 'groups', 'user_permissions'),
+            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_superuser', 'is_active', 'groups',
+                       'user_permissions'),
         }),
     )
     search_fields = ('email',)

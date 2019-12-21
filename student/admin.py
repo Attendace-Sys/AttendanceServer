@@ -56,7 +56,6 @@ from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.contrib.admin.widgets import AdminFileWidget
 from django.db import models
-from admin_view_permission.admin import AdminViewPermissionAdminSite
 
 
 
@@ -67,7 +66,7 @@ class ImageInline(admin.TabularInline):
     classes = 'collapse',
 
 
-class StudentAdmin(ImportExportModelAdmin, AdminViewPermissionAdminSite):
+class StudentAdmin(ImportExportModelAdmin,):
     labels = {
         'first_name': 'Full Name'
     }
@@ -162,6 +161,11 @@ class StudentAdmin(ImportExportModelAdmin, AdminViewPermissionAdminSite):
             worksheet.delete_cols(7, 6)
             # worksheet.append(["student_code", "first_name", "last_name", "email", "username", "password"])
             worksheet.insert_rows(1)
+            begrow = 2
+            endrow = worksheet.max_row
+            for row in range(begrow, endrow + 1):  # just an example
+                if worksheet.cell(row, 1).value is None:
+                    worksheet.delete_rows(row, row + 1)
             wb.save(import_file)
             # check
             # first always write the uploaded file to disk as it may be a

@@ -19,6 +19,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 from django.views.generic.base import TemplateView
+from django.contrib.auth.views import LoginView, LogoutView
+from django.conf.urls import url, include
+from User import views
+# from User.views import (LoginView, LogoutView)
 
 admin.site.site_header = 'Trang Web Admin'
 admin.site.site_title = 'Django Admin page'
@@ -26,12 +30,20 @@ admin.site.index_title = 'Django Admin page'
 
 router = routers.DefaultRouter()
 urlpatterns = [
-                  path('', admin.site.urls),
+                  path('admin/', admin.site.urls, name='admin'),
                   path('teachers/', include('teacher.urls')),
                   path('students/', include('student.urls')),
                   path('courses/', include('course.urls')),
                   path('users/', include('django.contrib.auth.urls')),
-
+                  url(r'^$', views.index, name='index'),
+                  path('user/', include('User.urls')),
+                  path('api/v1/auth/login/', views.LoginView.as_view()),
+                  path('api/v1/auth/logout/', views.LogoutView.as_view()),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns += [
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
+]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

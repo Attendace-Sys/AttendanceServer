@@ -85,4 +85,3 @@ class User(AbstractUser):
 
     class Meta:
         verbose_name_plural = 'Quản lý account'
-

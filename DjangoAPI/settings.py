@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_admin_listfilter_dropdown',
     'rangefilter',
     'import_export',
+    'rest_framework.authtoken',
 
 ]
 
@@ -108,7 +109,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysqldatabase',
         'USER': 'root',
-        'PASSWORD': 'Lethimylinh123',
+        'PASSWORD': 'Linhkute123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
@@ -175,7 +176,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # <-- And here
     ]
+
 }
 
 PASSWORD_HASHERS = [
