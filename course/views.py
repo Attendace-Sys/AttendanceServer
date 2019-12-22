@@ -20,6 +20,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 
+import json
 
 # from django_filters import FilterSet
 # from django_filters import rest_framework as filters
@@ -82,7 +83,7 @@ class CourseListViewByTeacherAPI(generics.ListAPIView,
         if teacher:
             courses = Course.objects.filter(teacher=teacher)
             serializer = CourseSerializer(courses, many=True)
-            return Response(serializer.data, status=200)
+            return Response({"classes":serializer.data}, status=200)
         else:
             return self.list(request)
 
@@ -139,9 +140,11 @@ class ScheduleListViewByCourseAPI(generics.ListAPIView,
         if course:
             schedule = Schedule.objects.filter(course=course)
             serializer = ScheduleSerializer(schedule, many=True)
-            return Response(serializer.data, status=200)
+            return Response({'schedule':serializer.data}, status=200)
         else:
-            return self.list(request)
+            schedule = Schedule.objects.filter()
+            serializer = ScheduleSerializer(schedule, many=True)
+            return Response({'schedule':serializer.data}, status=200)
 
 
 class AttendanceListViewAPI(generics.ListAPIView,
@@ -178,6 +181,27 @@ class AttendanceListViewAPI(generics.ListAPIView,
 
     def delete(self, request, attendance_code=None):
         return self.destroy(request, id)
+
+class UpdateListAttendancesViewAPI(APIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def post(self, request):
+        data = request.data
+        print(data)
+        jsonData = json.loads( json.dumps(data))
+        print(jsonData)
+        schedule_code = jsonData['schedule_code']
+        print(schedule_code)
+        count = 0
+        for item in jsonData['data']:
+            Attendance.objects.filter(attendance_code=item['attendance_code']).update(absent_status=item['absent_status'])
+            count = count + 1
+
+        if count == 0:        
+            return Response({'message':'failed'}, status=401)
+               
+        return Response({'message':'suceess'}, status=200)
 
 
 class AttendanceListViewByStudentAPI(generics.ListAPIView,
@@ -217,9 +241,12 @@ class AttendanceListViewByScheduleAPI(generics.ListAPIView,
         if schedule_code:
             attendance = Attendance.objects.filter(schedule_code=schedule_code)
             serializer = AttendanceSerializer(attendance, many=True)
-            return Response(serializer.data, status=200)
+            return Response({'attends':serializer.data}, status=200)
         else:
-            return self.list(request)
+            attendance = Attendance.objects.filter()
+            serializer = AttendanceSerializer(attendance, many=True)
+            
+            return Response({'attends':serializer.data}, status=200)
 
 
 class ScheduleImagesDataListViewByScheduleAPI(generics.ListAPIView,
@@ -238,9 +265,12 @@ class ScheduleImagesDataListViewByScheduleAPI(generics.ListAPIView,
         if schedule:
             schedule_image_data = ScheduleImagesData.objects.filter(schedule=schedule)
             serializer = ScheduleImagesDataSerializer(schedule_image_data, many=True)
-            return Response(serializer.data, status=200)
+            return Response({'attends':serializer.data}, status=200)
         else:
-            return self.list(request)
+            schedule_image_data = ScheduleImagesData.objects.filter()
+            serializer = ScheduleImagesDataSerializer(schedule_image_data, many=True)
+            return Response({'attends':serializer.data}, status=200)
+
 
 
 """

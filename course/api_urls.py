@@ -18,4 +18,6 @@ urlpatterns = [
     path('attendances/student/<str:student>/', AttendanceListViewByStudentAPI.as_view()),
     path('attendances/schedule/', AttendanceListViewByScheduleAPI.as_view()),
     path('attendances/schedule/<str:schedule_code>/', AttendanceListViewByScheduleAPI.as_view()),
+    path('updatelist/', UpdateListAttendancesViewAPI.as_view()),
+
 ]
