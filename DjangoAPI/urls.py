@@ -22,6 +22,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.conf.urls import url, include
 from User import views
+
 # from User.views import (LoginView, LogoutView)
 
 admin.site.site_header = 'Trang Web Admin'
@@ -30,15 +31,19 @@ admin.site.index_title = 'Django Admin page'
 
 router = routers.DefaultRouter()
 urlpatterns = [
+                  url(r'^$', views.index, name='index'),
                   path('admin/', admin.site.urls, name='admin'),
                   path('teachers/', include('teacher.urls')),
                   path('students/', include('student.urls')),
                   path('courses/', include('course.urls')),
-                  path('users/', include('django.contrib.auth.urls')),
-                  url(r'^$', views.index, name='index'),
                   path('user/', include('User.urls')),
+                  path('api/v1/', include('course.api_urls')),
+                  path('api/v1/', include('student.api_urls')),
+                  path('api/v1/', include('teacher.api_urls')),
+                  path('api/v1/', include('User.api_urls')),
                   path('api/v1/auth/login/', views.LoginView.as_view()),
                   path('api/v1/auth/logout/', views.LogoutView.as_view()),
+                  # path('users/', include('django.contrib.auth.urls')),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += [

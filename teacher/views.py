@@ -78,3 +78,30 @@ def register(request, *args, **kwargs):
         'form': form
     }
     return render(request, "register.html", context)
+
+
+from django.shortcuts import render
+from rest_framework import viewsets
+from .models import Teacher
+from django.http import HttpResponse
+from .serializers import TeacherSerializer
+from rest_framework.views import APIView
+# from .serializers import LoginSerializer
+from django.contrib.auth import login as django_login, logout as django_logout
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.response import Response
+from rest_framework import generics
+# from .serializers import EmployeeSerializer
+# from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter, SearchFilter
+
+
+# from django_filters import FilterSet
+# from django_filters import rest_framework as filters
+# Create your views here.
+
+
+class TeacherListViewAPI(generics.ListAPIView):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer

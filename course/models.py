@@ -110,7 +110,7 @@ class Course(models.Model):
         while date_schedule <= end:
             schedule = Schedule(course=self)
             schedule.schedule_code = \
-                self.course_code + "-" + str(date_schedule) + "-" + str(schedule_number_of_day_count)
+                self.course_code + "-" + str(schedule_number_of_day_count)
             schedule.date_schedule = date_schedule
             schedule.schedule_number_of_day = schedule_number_of_day_count
             schedule_number_of_day_count = schedule_number_of_day_count + 1
@@ -142,6 +142,7 @@ class Schedule(models.Model):
 
     def save(self, *args, **kwargs):
         super(Schedule, self).save(*args, **kwargs)
+
 
 class Attendance(models.Model):
     attendance_code = models.AutoField(primary_key=True)

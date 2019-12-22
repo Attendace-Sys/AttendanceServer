@@ -4,7 +4,7 @@ from rest_framework import exceptions
 from .models import User
 
 
-class UserSerializers(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User

@@ -173,6 +173,7 @@ AUTH_USER_MODEL = 'User.User'
 LOGIN_REDIRECT_URL = ''
 LOGOUT_REDIRECT_URL = ''
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
