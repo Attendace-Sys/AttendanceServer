@@ -12,6 +12,7 @@ from DjangoAPI import settings
 class Course(models.Model):
     course_code = models.CharField(max_length=20, null=False, primary_key=True, blank=False)
     course_name = models.CharField(max_length=50, null=False)
+    course_room = models.CharField(max_length=50, null=False)
     start_day = models.DateField(null=True)
     end_day = models.DateField(null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
@@ -84,6 +85,17 @@ class Course(models.Model):
         ]
     )
 
+    def create_attendance(self, schedule, *args, **kwargs):
+        for student in self.students.all():
+            attendance = Attendance()
+            attendance.attendance_code = schedule.schedule_code + '-' + student.student_code
+            attendance.student = student
+            attendance.schedule_code = schedule
+            attendance.absent_status = False
+            attendance.checked_status = False
+            attendance.image_data = None
+            attendance.save()
+
     def create_schedule(self, *args, **kwargs):
         # get begin day
         day_begin = self.start_day
@@ -117,6 +129,7 @@ class Course(models.Model):
             if schedule.schedule_date is None:
                 schedule.schedule_date = date_schedule
             schedule.save()
+            self.create_attendance(schedule, *args, **kwargs)
             date_schedule = date_schedule + timedelta(days=7)
 
     def save(self, *args, **kwargs):
@@ -124,7 +137,7 @@ class Course(models.Model):
         if self.pk:
             # do when create
             if self.start_day is not None and self.end_day is not None and (self.start_day <= self.end_day):
-                self.create_schedule(self, *args, **kwargs)
+                self.create_schedule(*args, **kwargs)
         return instance
 
     class Meta:
@@ -145,12 +158,19 @@ class Schedule(models.Model):
 
 
 class Attendance(models.Model):
-    attendance_code = models.AutoField(primary_key=True)
+    attendance_code = models.CharField(max_length=50, null=False, primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
     schedule_code = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
     absent_status = models.BooleanField(default=False)
+    checked_status = models.BooleanField(default=False)
     # save to student_name folder
-    image_data = models.FileField(upload_to='media/students/images/}', blank=False, null=False)
+    image_data = models.FileField(upload_to='media/students/images/}', null=True)
+
+    @property
+    def date(self):
+        if self.schedule_code.schedule_date is None:
+            return None
+        return self.schedule_code.schedule_date
 
     def save(self, *args, **kwargs):
         super(Attendance, self).save(*args, **kwargs)

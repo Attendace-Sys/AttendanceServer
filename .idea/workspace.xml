@@ -5,28 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="45db6c03-4e18-40fb-8413-6440a1bc8d43" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/User/api_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/student/api_urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/teacher/api_urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoAPI/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoAPI/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoAPI/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/User/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/User/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/User/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/api_urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/course/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/course/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/teacher/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/teacher/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,7 +215,7 @@
       <workItem from="1576812179008" duration="300000" />
       <workItem from="1576812578447" duration="9362000" />
       <workItem from="1576863512686" duration="3423000" />
-      <workItem from="1576868197481" duration="41330000" />
+      <workItem from="1576868197481" duration="53663000" />
     </task>
     <servers />
   </component>
