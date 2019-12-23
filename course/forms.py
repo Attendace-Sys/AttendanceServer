@@ -16,4 +16,6 @@ class ScheduleForms(forms.ModelForm):
         model = Schedule
         fields = ['schedule_code']
 
-    files = MultiFileField(min_num=1, max_num=15, max_file_size=1024 * 1024 * 5)
+    files = MultiFileField(min_num=1, max_num=15)
+  
+ 

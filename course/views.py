@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Course, Schedule, Attendance, ScheduleImagesData
+from student.models import Student, StudentImagesData
 from django.http import HttpResponse
 from .serializers import CourseSerializer, ScheduleSerializer, ScheduleImagesDataSerializer, StudentCustomSerializer, \
     AttendanceSerializer
@@ -26,6 +27,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_http_methods
+
 
 # from django_filters import FilterSet
 # from django_filters import rest_framework as filters
@@ -289,19 +292,59 @@ def schedule_list(request, template_name='schedule_list.html'):
     data = {'object_list': schedule}
     return render(request, template_name, data)
 
+from django.utils.datastructures import MultiValueDict
+
 
 @method_decorator(csrf_exempt, name='dispatch')
-@login_required
+@require_http_methods(["POST"])
 def schedule_create(request, template_name='schedule_form.html'):
-    form = ScheduleForms(request.POST or None, request.FILES or None)
-    print("gettingform1")
-    print(form)
-    if form.is_valid():
-        form.save()
-        print("gettingform2")
-        print(form)
-        return redirect('schedule:schedule_list')
-    return render(request, template_name, {'form': form})
+
+    if (request.method== 'POST'):
+
+        form = ScheduleForms(request.POST or None, request.FILES or None)
+
+        # boundingBox in class room images
+        m_json_data = form.data.getlist('json_data')[0]
+
+        # class room images
+        in_memory_uploaded_file_data = request.FILES.getlist('files')
+        
+
+        for file in in_memory_uploaded_file_data:
+            print(file)
+
+        # extract all faces in classroom images
+
+
+        # build vectors for all faces in classroom images
+
+
+        # get all list stutdent in class
+        m_schedule_code = form.data.getlist('schedule_code')[0]
+        course_id = list(Schedule.objects.filter(schedule_code = m_schedule_code).values('course')) [0]
+        list_student = list(Student.objects.filter(course__course_code=course_id['course']))
+
+        # get all images of each student in class
+        for item in list_student:
+            list_image = list(StudentImagesData.objects.filter(student_id = item.student).values('image_data'))
+
+        # build vector for all faces images of student in class
+
+
+        # use knn for detect faces (label, prob)
+
+
+        # build json to return
+        json_response = '' 
+
+
+        return HttpResponse(json_response, content_type='application/json')
+
+    else:
+        return HttpResponse('error', content_type='application/json')
+
+
+
 
 
 def schedule_update(request, schedule_code, template_name='schedule_form.html'):

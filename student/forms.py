@@ -10,6 +10,11 @@ class StudentImagesDataForms(forms.ModelForm):
 
 
 class StudentForms(forms.ModelForm):
+    first_name = forms.CharField(required=False)
+    email = forms.EmailField(required=False)
+    student_video_data = forms.FileField(required=False)
+    username = forms.CharField(required=False)
+    password = forms.CharField(required=False)
     class Meta:
         model = Student
         fields = ['student_code', 'first_name', 'email', 'username', 'password', 'student_video_data']
