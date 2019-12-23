@@ -56,7 +56,6 @@ def FaceVideo_show(request):
         return HttpResponse(status=HttpResponse.status_code)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class StudentView(CreateView):
     queryset = Student.objects.all()
     model = Student
@@ -65,8 +64,6 @@ class StudentView(CreateView):
     success_url = 'serializer/students'
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-@login_required
 def student_list(request, template_name='student_list.html'):
     if request.user.is_superuser:
         student = Student.objects.all()
@@ -76,8 +73,6 @@ def student_list(request, template_name='student_list.html'):
     return render(request, template_name, data)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-@login_required
 def student_create(request, template_name='student_form.html'):
     form = StudentForms(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -86,8 +81,6 @@ def student_create(request, template_name='student_form.html'):
     return render(request, template_name, {'form': form})
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-@login_required
 def student_update(request, student_code, template_name='student_form.html'):
     if request.user.is_superuser:
         student = get_object_or_404(Student, student_code=student_code)
@@ -100,8 +93,6 @@ def student_update(request, student_code, template_name='student_form.html'):
     return render(request, template_name, {'form': form})
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-@login_required
 def student_delete(request, student_code, template_name='student_confirm_delete.html'):
     if request.user.is_superuser:
         student = get_object_or_404(Student, student_code=student_code)
@@ -261,3 +252,36 @@ class StudentImagesDataListViewByStudentAPI(generics.ListAPIView,
             return Response(serializer.data, status=200)
         else:
             return self.list(request)
+
+
+class StudentListCourseViewAPI(APIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def post(self, request):
+        data = request.data
+        json_data = json.loads(json.dumps(data))
+        count = 0
+        for item in json_data['data']:
+            Attendance.objects.filter(attendance_code=item['attendance_code']).update(
+                absent_status=item['absent_status'])
+            count = count + 1
+
+        if count == 0:
+            return Response({'message': 'failed'}, status=401)
+
+        return Response({'message': 'suceess'}, status=200)
+
+    def get(self, request):
+        data = request.data
+        json_data = json.loads(json.dumps(data))
+        count = 0
+        for item in json_data['data']:
+            Attendance.objects.filter(attendance_code=item['attendance_code']).update(
+                absent_status=item['absent_status'])
+            count = count + 1
+
+        if count == 0:
+            return Response({'message': 'failed'}, status=401)
+
+        return Response({'message': 'suceess'}, status=200)

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Course, Schedule, Attendance, ScheduleImagesData
 from student.models import Student
 
+
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
@@ -21,14 +22,9 @@ class StudentCustomSerializer(serializers.ModelSerializer):
         # fields = ['student_code', 'first_name', ]
         fields = '__all__'
 
-class StudentCustom2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Student
-        fields = ['student_code', 'first_name', ]
-
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    student = StudentCustom2Serializer()
+    student = StudentCustomSerializer()
 
     class Meta:
         model = Attendance

@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Course, Schedule, Attendance, ScheduleImagesData
 from django.http import HttpResponse
-from .serializers import CourseSerializer, ScheduleSerializer, AttendanceSerializer, ScheduleImagesDataSerializer
+from .serializers import CourseSerializer, ScheduleSerializer, ScheduleImagesDataSerializer, StudentCustomSerializer, \
+    AttendanceSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import login as django_login, logout as django_logout
 from rest_framework.authtoken.models import Token
@@ -19,8 +20,12 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
-
+from course.forms import ScheduleForms
 import json
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.shortcuts import render, redirect, get_object_or_404
 
 # from django_filters import FilterSet
 # from django_filters import rest_framework as filters
@@ -83,7 +88,7 @@ class CourseListViewByTeacherAPI(generics.ListAPIView,
         if teacher:
             courses = Course.objects.filter(teacher=teacher)
             serializer = CourseSerializer(courses, many=True)
-            return Response({"classes":serializer.data}, status=200)
+            return Response({"classes": serializer.data}, status=200)
         else:
             return self.list(request)
 
@@ -140,11 +145,11 @@ class ScheduleListViewByCourseAPI(generics.ListAPIView,
         if course:
             schedule = Schedule.objects.filter(course=course)
             serializer = ScheduleSerializer(schedule, many=True)
-            return Response({'schedule':serializer.data}, status=200)
+            return Response({'schedule': serializer.data}, status=200)
         else:
             schedule = Schedule.objects.filter()
             serializer = ScheduleSerializer(schedule, many=True)
-            return Response({'schedule':serializer.data}, status=200)
+            return Response({'schedule': serializer.data}, status=200)
 
 
 class AttendanceListViewAPI(generics.ListAPIView,
@@ -154,7 +159,7 @@ class AttendanceListViewAPI(generics.ListAPIView,
                             mixins.UpdateModelMixin,
                             mixins.DestroyModelMixin):
     queryset = Attendance.objects.all()
-    serializer_class = AttendanceSerializer
+    serializer_class = StudentCustomSerializer
     lookup_field = 'attendance_code'
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -182,47 +187,24 @@ class AttendanceListViewAPI(generics.ListAPIView,
     def delete(self, request, attendance_code=None):
         return self.destroy(request, id)
 
+
 class UpdateListAttendancesViewAPI(APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def post(self, request):
         data = request.data
-        print(data)
-        jsonData = json.loads( json.dumps(data))
-        print(jsonData)
-        schedule_code = jsonData['schedule_code']
-        print(schedule_code)
+        json_data = json.loads(json.dumps(data))
         count = 0
-        for item in jsonData['data']:
-            Attendance.objects.filter(attendance_code=item['attendance_code']).update(absent_status=item['absent_status'])
+        for item in json_data['data']:
+            Attendance.objects.filter(attendance_code=item['attendance_code']).update(
+                absent_status=item['absent_status'])
             count = count + 1
 
-        if count == 0:        
-            return Response({'message':'failed'}, status=401)
-               
-        return Response({'message':'suceess'}, status=200)
+        if count == 0:
+            return Response({'message': 'failed'}, status=401)
 
-
-class AttendanceListViewByStudentAPI(generics.ListAPIView,
-                                     mixins.ListModelMixin,
-                                     mixins.CreateModelMixin,
-                                     mixins.RetrieveModelMixin,
-                                     mixins.UpdateModelMixin,
-                                     mixins.DestroyModelMixin):
-    queryset = Attendance.objects.all()
-    serializer_class = AttendanceSerializer
-    lookup_field = 'student'
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
-    def get(self, request, student=None):
-        if student:
-            attendance = Attendance.objects.filter(student=student)
-            serializer = AttendanceSerializer(attendance, many=True)
-            return Response(serializer.data, status=200)
-        else:
-            return self.list(request)
+        return Response({'message': 'suceess'}, status=200)
 
 
 class AttendanceListViewByScheduleAPI(generics.ListAPIView,
@@ -241,12 +223,12 @@ class AttendanceListViewByScheduleAPI(generics.ListAPIView,
         if schedule_code:
             attendance = Attendance.objects.filter(schedule_code=schedule_code)
             serializer = AttendanceSerializer(attendance, many=True)
-            return Response({'attends':serializer.data}, status=200)
+            return Response({'attends': serializer.data}, status=200)
         else:
             attendance = Attendance.objects.filter()
             serializer = AttendanceSerializer(attendance, many=True)
-            
-            return Response({'attends':serializer.data}, status=200)
+
+            return Response({'attends': serializer.data}, status=200)
 
 
 class ScheduleImagesDataListViewByScheduleAPI(generics.ListAPIView,
@@ -265,71 +247,80 @@ class ScheduleImagesDataListViewByScheduleAPI(generics.ListAPIView,
         if schedule:
             schedule_image_data = ScheduleImagesData.objects.filter(schedule=schedule)
             serializer = ScheduleImagesDataSerializer(schedule_image_data, many=True)
-            return Response({'attends':serializer.data}, status=200)
+            return Response({'attends': serializer.data}, status=200)
         else:
             schedule_image_data = ScheduleImagesData.objects.filter()
             serializer = ScheduleImagesDataSerializer(schedule_image_data, many=True)
-            return Response({'attends':serializer.data}, status=200)
+            return Response({'attends': serializer.data}, status=200)
 
 
-
-"""
-class CourseViewAPI(APIView):
+class UploadCheckingAttendanceViewAPI(APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
-
-    def get(self, request):
-        courses = Course.objects.all()
-        serializer = CourseSerializer(courses, many=True)
-        return Response(serializer.data, status=200)
 
     def post(self, request):
         data = request.data
-        serializer = CourseSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.erros, status=400)
+        json_data = json.loads(json.dumps(data))
+        count = 0
+        for item in json_data['data']:
+            Attendance.objects.filter(attendance_code=item['attendance_code']).update(
+                absent_status=item['absent_status'])
+            count = count + 1
+
+        if count == 0:
+            return Response({'message': 'failed'}, status=401)
+
+        return Response({'message': 'suceess'}, status=200)
 
 
-class CourseDetailView(APIView):
-    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated, IsAdminUser]
-
-    def get_object(self, course_code):
-        try:
-            return Course.objects.get(course_code=course_code)
-        except Course.DoesNotExist as e:
-            return Response({"error": "Given Course code not found."}, status=404)
-
-    def get(self, request, course_code=None):
-        instance = self.get_object(course_code)
-        serializer = CourseSerializer(instance)
-        return Response(serializer.data)
-
-    def get(self, request, teacher_code=None):
-        instance = self.get_object(teacher_code)
-        serializer = CourseSerializer(instance)
-        return Response(serializer.data)
-
-    def put(self, request, course_code=None):
-        data = request.data
-        instance = self.get_object(course_code)
-        serializer = CourseSerializer(instance, data=data)
-        if serializer.is_valide():
-            serializer.save()
-            return Response(serializer.data, status=200)
-        return Response(serializer.erros, status=400)
-
-    def delete(self, request, course_code=None):
-        instance = self.get_object(course_code)
-        instance.delete()
-        return HttpResponse(status=204)
+class ScheduleView(CreateView):
+    queryset = Schedule.objects.all()
+    model = Schedule
+    form_class = ScheduleForms
+    template_name = 'schedule_form.html'
+    success_url = 'serializer/schedules'
 
 
+def schedule_list(request, template_name='schedule_list.html'):
+    if request.user.is_superuser:
+        schedule = Schedule.objects.all()
+    else:
+        schedule = Schedule.objects.filter()
+    data = {'object_list': schedule}
+    return render(request, template_name, data)
 
 
-class CourseListView(viewsets.ModelViewSet):
-    queryset = Course.objects.all().order_by('teacher')
-    serializer_class = CourseSerializer
-"""
+@method_decorator(csrf_exempt, name='dispatch')
+@login_required
+def schedule_create(request, template_name='schedule_form.html'):
+    form = ScheduleForms(request.POST or None, request.FILES or None)
+    print("gettingform1")
+    print(form)
+    if form.is_valid():
+        form.save()
+        print("gettingform2")
+        print(form)
+        return redirect('schedule:schedule_list')
+    return render(request, template_name, {'form': form})
+
+
+def schedule_update(request, schedule_code, template_name='schedule_form.html'):
+    if request.user.is_superuser:
+        schedule = get_object_or_404(Schedule, schedule_code=schedule_code)
+    else:
+        schedule = get_object_or_404(Schedule, schedule_code=schedule_code)
+    form = ScheduleForms(request.POST or None, request.FILES or None, instance=schedule)
+    if form.is_valid():
+        form.save()
+        return redirect('schedule:schedule_list')
+    return render(request, template_name, {'form': form})
+
+
+class ScheduleImagesDataView(viewsets.ModelViewSet):
+    queryset = ScheduleImagesData.objects.all()
+    serializer_class = ScheduleImagesDataSerializer
+
+
+class ScheduleSerializerView(viewsets.ModelViewSet):
+    queryset = Schedule.objects.all()
+    serializer_class = ScheduleSerializer

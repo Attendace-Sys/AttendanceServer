@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'teacher.apps.TeacherConfig',
     'course.apps.CourseConfig',
     'User.apps.UserConfig',
-    'theme',
     'django_admin_listfilter_dropdown',
     'rangefilter',
     'import_export',
@@ -109,7 +108,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysqldatabase',
         'USER': 'root',
-        'PASSWORD': 'Lethimylinh123',
+        'PASSWORD': 'Linhkute123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {

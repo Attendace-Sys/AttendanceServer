@@ -162,7 +162,6 @@ class Attendance(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
     schedule_code = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
     absent_status = models.BooleanField(default=False)
-    checked_status = models.BooleanField(default=False)
     # save to student_name folder
     image_data = models.FileField(upload_to='media/students/images/}', null=True)
 
@@ -181,18 +180,6 @@ class Attendance(models.Model):
 
 class ScheduleImagesData(models.Model):
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
-    """
-    def path_and_rename(self, name):
-        filename = ''
-        name, ext = os.path.split(self.image_data.name)
-        # get filename
-        if self.student:
-            filename = 'students/{0}/images/{1}_{2}'.format(self.student, self.student, self.image_data.name)
-        else:
-            filename = 'students/images/{0}{1}'.format(name, self.image_data.name)
-        # return the whole path to the file
-        return filename
-    """
     # save picture to student folder
     image_data = models.FileField(upload_to='media/', blank=False, null=False)
     image_date_upload = models.DateField(auto_now_add=True, null=True)

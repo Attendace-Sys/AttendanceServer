@@ -1,0 +1,16 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+<ul>
+    {% for e in object_list %}
+    <li> {{ e.schedule_code }}
+    <a href="{% url 'schedule:schedule_edit' e.student_code %}">edit</a>
+    <a href="{% url 'schedule:schedule_delete' e.student_code %}">delete</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'schedule:schedule_new' %}">New</a>
+
+{% endblock %}

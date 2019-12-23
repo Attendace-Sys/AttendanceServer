@@ -366,8 +366,8 @@ class ScheduleChoiceField(forms.ModelChoiceField):
 
 
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('attendance_code', 'student', 'schedule_code', 'date', 'absent_status', 'image_data', 'checked_status')
-    search_fields = ('attendance_code', 'checked_status',)
+    list_display = ('attendance_code', 'student', 'schedule_code', 'date', 'absent_status', 'image_data',)
+    search_fields = ('attendance_code',)
 
     fieldsets = (
         (None, {
