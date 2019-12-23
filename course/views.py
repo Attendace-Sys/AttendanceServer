@@ -281,27 +281,14 @@ class ScheduleView(CreateView):
     success_url = 'serializer/schedules'
 
 
-def schedule_list(request, template_name='schedule_list.html'):
-    if request.user.is_superuser:
-        schedule = Schedule.objects.all()
-    else:
-        schedule = Schedule.objects.filter()
-    data = {'object_list': schedule}
-    return render(request, template_name, data)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-@login_required
-def schedule_create(request, template_name='schedule_form.html'):
+def schedule_create(request):
     form = ScheduleForms(request.POST or None, request.FILES or None)
-    print("gettingform1")
-    print(form)
-    if form.is_valid():
-        form.save()
-        print("gettingform2")
-        print(form)
-        return redirect('schedule:schedule_list')
-    return render(request, template_name, {'form': form})
+    m_schedule = form.data.getlist
+
+    return HttpResponse("", content_type='application/json')
 
 
 def schedule_update(request, schedule_code, template_name='schedule_form.html'):
@@ -312,7 +299,7 @@ def schedule_update(request, schedule_code, template_name='schedule_form.html'):
     form = ScheduleForms(request.POST or None, request.FILES or None, instance=schedule)
     if form.is_valid():
         form.save()
-        return redirect('schedule:schedule_list')
+        return redirect('schedule:schedule_form')
     return render(request, template_name, {'form': form})
 
 

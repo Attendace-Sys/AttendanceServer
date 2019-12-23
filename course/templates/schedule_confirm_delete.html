@@ -1,9 +1,6 @@
 {% extends 'admin/base.html' %}
 
-
 {% block content %}
-
-<h2><a href="{% url 'schedule:schedule_list' %}">schedule</a>: Delete?</h2>
 
 <form method="post">
     {% csrf_token %}

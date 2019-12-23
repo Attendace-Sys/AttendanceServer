@@ -68,7 +68,7 @@ def student_list(request, template_name='student_list.html'):
     if request.user.is_superuser:
         student = Student.objects.all()
     else:
-        student = Student.objects.filter(user=request.user)
+        student = Student.objects.filter()
     data = {'object_list': student}
     return render(request, template_name, data)
 
@@ -85,7 +85,7 @@ def student_update(request, student_code, template_name='student_form.html'):
     if request.user.is_superuser:
         student = get_object_or_404(Student, student_code=student_code)
     else:
-        student = get_object_or_404(Student, student_code=student_code, user=request.user)
+        student = get_object_or_404(Student, student_code=student_code)
     form = StudentForms(request.POST or None, request.FILES or None, instance=student)
     if form.is_valid():
         form.save()
@@ -97,7 +97,7 @@ def student_delete(request, student_code, template_name='student_confirm_delete.
     if request.user.is_superuser:
         student = get_object_or_404(Student, student_code=student_code)
     else:
-        student = get_object_or_404(Student, student_code=student_code, user=request.user)
+        student = get_object_or_404(Student, student_code=student_code)
     if request.method == 'POST':
         student.delete()
         return redirect('student:student_list')
