@@ -10,11 +10,14 @@ class ScheduleImagesDataForms(forms.ModelForm):
 
 
 class ScheduleForms(forms.ModelForm):
-    json_data = forms.CharField(max_length=1024)
+    json_data = forms.CharField(max_length=1024, required=False)
+    schedule_code = forms.CharField(required=False)
+    schedule_date = forms.DateField(required=False)
+    schedule_number_of_day = forms.IntegerField(required=False)
 
     class Meta:
         model = Schedule
-        fields = ['schedule_code']
+        fields = ['schedule_code', 'json_data']
 
     files = MultiFileField(min_num=1, max_num=15)
   

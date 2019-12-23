@@ -284,13 +284,6 @@ class ScheduleView(CreateView):
     success_url = 'serializer/schedules'
 
 
-def schedule_list(request, template_name='schedule_list.html'):
-    if request.user.is_superuser:
-        schedule = Schedule.objects.all()
-    else:
-        schedule = Schedule.objects.filter()
-    data = {'object_list': schedule}
-    return render(request, template_name, data)
 
 from django.utils.datastructures import MultiValueDict
 
@@ -347,6 +340,7 @@ def schedule_create(request, template_name='schedule_form.html'):
 
 
 
+
 def schedule_update(request, schedule_code, template_name='schedule_form.html'):
     if request.user.is_superuser:
         schedule = get_object_or_404(Schedule, schedule_code=schedule_code)
@@ -355,7 +349,7 @@ def schedule_update(request, schedule_code, template_name='schedule_form.html'):
     form = ScheduleForms(request.POST or None, request.FILES or None, instance=schedule)
     if form.is_valid():
         form.save()
-        return redirect('schedule:schedule_list')
+        return redirect('schedule:schedule_form')
     return render(request, template_name, {'form': form})
 
 
