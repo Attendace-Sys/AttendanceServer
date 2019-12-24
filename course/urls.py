@@ -10,6 +10,6 @@ router.register('images', views.ScheduleImagesDataView)
 urlpatterns=router.urls
 urlpatterns = [
     path('serializer/', include(router.urls)),
-    path('new/', views.schedule_create, name='schedule_new'),
+    path('new', views.schedule_create, name='schedule_new'),
     path('edit/<int:schedule_code>/', views.schedule_update, name='schedule_edit'),
 ]
