@@ -68,10 +68,10 @@ from keras.applications.imagenet_utils import preprocess_input
 from keras.preprocessing import image
 from keras.models import model_from_json
 from os import listdir
-
-# from django_filters import FilterSet
-# from django_filters import rest_framework as filters
-# Create your views here.
+#https://github.com/serengil/tensorflow-101/blob/master/python/facenet.ipynb
+from keras.applications.imagenet_utils import preprocess_input
+from os import listdir
+from os.path import isdir
 
 
 class CourseListViewAPI(generics.ListAPIView,
@@ -322,30 +322,10 @@ class ScheduleView(CreateView):
 	template_name = 'schedule_form.html'
 	success_url = 'serializer/schedules'
 
-#https://github.com/serengil/tensorflow-101/blob/master/python/facenet.ipynb
-from keras.applications.imagenet_utils import preprocess_input
-'''# get the face embedding for one face
-def get_embedding(model, face_pixels):
-	# scale pixel values
-	face_pixels = face_pixels.astype('float32')
-	# standardize pixel values across channels (global)
-	# mean, std = face_pixels.mean(), face_pixels.std()
-	# face_pixels = (face_pixels - mean) / std
-	# transform face into one sample
-	samples = expand_dims(face_pixels, axis=0)
-	samples = preprocess_input(samples)
-	
-	with app.graph.as_default():
-		# make prediction to get embedding
-		yhat = model.predict(samples)
-	return yhat[0]
-'''
+
+
 def l2_normalize(x):
-     return x / np.sqrt(np.sum(np.multiply(x, x)))
-# get the face embedding for one face
-def get_embedding(model, img):
-	with app.graph.as_default():
-		return l2_normalize(model.predict(img)[0,:])
+	 return x / np.sqrt(np.sum(np.multiply(x, x)))
 
 def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_json_data, model):
 	required_size=(160, 160)
@@ -371,18 +351,12 @@ def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_j
 
 			resized_img = image.crop(box)
 			resized_img = resized_img.resize(required_size, Image.ANTIALIAS)
-			# resized_img.show();
-			
-			img_pixels = np.copy(asarray(resized_img))
-			img_pixels = img_pixels.astype('float32')
-			#img_pixels = image.img_to_array(resized_img)
-			img_pixels = np.expand_dims(img_pixels, axis = 0)            
-			# using preprocess_image and it normalizes in scale of [-1, +1]
-			img_pixels /= 127.5
-			img_pixels -= 1
+			img = img_to_array(resized_img)
+			img = np.expand_dims(img, axis=0)
+			img = preprocess_input(img)
 
 			with app.graph.as_default():
-				img_vector = l2_normalize(model.predict(img_pixels)[0,:])
+				img_vector = l2_normalize(model.predict(img)[0,:])
 				list_face_array_in_img.append(img_vector)
 
 		list_of_list_face_in_each_img.append(list_face_array_in_img)
@@ -390,19 +364,7 @@ def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_j
 	
 	return list_of_list_face_in_each_img
 
-
-# extract a single face from a given photograph
-'''
-def extract_face(filename, required_size=(160, 160)):
-	# load image from file
-	image = Image.open(filename)
-	# convert to RGB, if needed
-	image = image.convert('RGB')
-	image = image.resize(required_size)
-	face_array = asarray(image)
-	return face_array
-'''
-def extract_face(image_path):
+def preprocess_image(image_path):
 	img = load_img(image_path, target_size=(160, 160))
 	img = img_to_array(img)
 	img = np.expand_dims(img, axis=0)
@@ -420,15 +382,13 @@ def load_faces(directory, model):
 		# path
 		path = directory + filename
 		# get face
-		img = extract_face(path)
-		img_vector = get_embedding(model, img)
-		# store
-		faces.append(img_vector)
+		img = preprocess_image(path)
+		with app.graph.as_default():
+			img_vector = l2_normalize(model.predict(img)[0,:])
+			faces.append(img_vector)
+	
 	return faces
 
-
-from os import listdir
-from os.path import isdir
 
 def load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR):
 	
@@ -451,10 +411,13 @@ def load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR):
 		train_X.extend(faces)
 		train_Y.extend(labels)
 
-	# print(train_X)
-	# print(train_Y)
 	return train_X, train_Y
-	
+
+def findEuclideanDistance(source_representation, test_representation):
+	euclidean_distance = source_representation - test_representation
+	euclidean_distance = np.sum(np.multiply(euclidean_distance, euclidean_distance))
+	euclidean_distance = np.sqrt(euclidean_distance)
+	return euclidean_distance	
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -486,27 +449,15 @@ def schedule_create(request, template_name='schedule_form.html'):
 		
 		# build vectors for all faces in classroom images
 		trainX, trainY = load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR)
-
-		# normalize input vectors
-		# print(trainX[0])
-		#in_encoder = Normalizer(norm='l2')
-		#trainX = in_encoder.transform(trainX)
-		# trainX_normalized = preprocessing.normalize(trainX, norm='l2')
-
-		print('----')
+		print(trainY)
 
 		# label encode targets
 		out_encoder = LabelEncoderExt()
 		out_encoder.fit(trainY)
 		trainY = out_encoder.transform(trainY)
 
-		# ['linh','phat', 'phat'] --> [1, 2, 2]
-
-		# use knn for detect faces (label, prob)
 		neigh = NearestNeighbors(n_neighbors=1)
 		neigh.fit(trainX)
-
-		# print(trainX)
 
 		list_predict_result = []
 
@@ -514,25 +465,9 @@ def schedule_create(request, template_name='schedule_form.html'):
 		# Threshold see: https://sefiks.com/2018/09/03/face-recognition-with-facenet-in-keras/
 		distance_threshold = 0.35
 		for face_vector_list in list_of_list_face_vector_in_each_img:
-			# print (face_vector_list)
-			#print ('face in images' + str(imag_count))
-			#print(np.shape(face_vector_list))
-
-			# normalize first before querying
-			#encoder = Normalizer(norm='l2') 
-			#face_vector_list = encoder.transform(face_vector_list)
-			# face_vector_list_normalized = preprocessing.normalize(face_vector_list, norm='l2')
-
-			#print(face_vector_list[0])
-		
 			neigh_dist, neigh_ind = neigh.kneighbors(face_vector_list, n_neighbors=1)
 			print(neigh_dist)
-			print(neigh_ind)
-
-			#predict_result = out_encoder.transform(predict_result_encoded)
-
-			# list_predict_result.append(predict_result)
-	  
+			print(neigh_ind)			
 
 		# build json to return
 		json_response = '' 
@@ -542,9 +477,6 @@ def schedule_create(request, template_name='schedule_form.html'):
 
 	else:
 		return HttpResponse('error', content_type='application/json')
-
-
-
 
 
 
