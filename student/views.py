@@ -302,3 +302,22 @@ class StudentListCourseViewAPI(APIView):
             return Response({'message': 'failed'}, status=401)
 
         return Response({'message': 'suceess'}, status=200)
+
+from course.models import Schedule, Attendance
+
+class StudentAttendanceOfACourse(APIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, course_code = None, student_code = None):
+        if course_code:
+            list_schedule_code = list(Schedule.objects.filter(course = course_code).values('schedule_code'))
+            list_attendance = []
+            for item in list_schedule_code:
+                attendance = list(Attendance.objects.filter(schedule_code = item.get('schedule_code')).filter(student = student_code).values('attendance_code', 'schedule_code', 'schedule_code__schedule_date', 'absent_status'))[0]
+                
+                list_attendance.append(attendance)
+                print(type(list_attendance))
+
+            return Response(list_attendance, status=200)
+        return Response({'message': 'failed'}, status=401)
