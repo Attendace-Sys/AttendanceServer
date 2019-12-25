@@ -29,7 +29,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core import serializers
-
+from course.models import Schedule, Attendance
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -276,6 +276,7 @@ class StudentImagesDataListViewByStudentAPI(generics.ListAPIView,
             return self.list(request)
 
 
+
 class StudentGetListCourseByStudentAPI(APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -283,15 +284,18 @@ class StudentGetListCourseByStudentAPI(APIView):
     def get(self, request, student):
         if student:
             students = list(Student.objects.get(student_code=student).course_set.all().values('course_code',
-                                                                                              'course_name', 'teacher',
+                                                                                              'course_name',
+                                                                                              'course_room',
+                                                                                              'start_day',
+                                                                                              'end_day', 'day_of_week',
+                                                                                              'time_start_of_course',
+                                                                                              'time_duration',
+                                                                                              'teacher',
                                                                                               'teacher',
                                                                                               'teacher__first_name'))
-            json_file = json.dumps(students, ensure_ascii=False).encode('utf8')
+            json_file = json.dumps(students, ensure_ascii=False, default=str).encode('utf8')
             return HttpResponse(json_file, content_type='application/json', status=200)
         return Response({'message': 'failed'}, status=401)
-
-
-from course.models import Schedule, Attendance
 
 
 class StudentAttendanceOfACourse(APIView):

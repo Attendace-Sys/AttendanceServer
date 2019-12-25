@@ -55,7 +55,6 @@ from numpy import load
 from numpy import expand_dims
 from numpy import asarray
 import tensorflow as tf
-from course.apps import graph
 from sklearn import preprocessing
 
 
