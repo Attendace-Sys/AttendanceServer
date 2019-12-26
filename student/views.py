@@ -20,8 +20,6 @@ from rest_framework.response import Response
 from django.views.generic.edit import CreateView
 from rest_framework import status
 from rest_framework import generics
-# from .serializers import EmployeeSerializer
-# from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework import mixins
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
@@ -99,23 +97,42 @@ def student_list(request, template_name='student_list.html'):
 @require_http_methods(["POST", "GET"])
 def student_create_or_update(request, student_code=None, template_name='student_form.html'):
     if student_code is None:
-        # if no have code link =>
-        students = Student.objects.get(student_code=student_code)
-        print(type(students))
-        #
-
         form = StudentForms(request.POST or None, request.FILES or None)
-        if form.is_valid():
-            form.save()
-            return redirect('student:student_list')
+        # begin
+        if request.method == 'POST':
+            code = form.data.getlist('student_code')[0]
+            try:
+                students = Student.objects.get(student_code=code)
+            except:
+                students = None
+            if students is not None:
+                # update object
+                if request.user.is_superuser:
+                    student = get_object_or_404(Student, student_code=students)
+                else:
+                    student = get_object_or_404(Student, student_code=students)
+                form = StudentForms(request.POST or None, request.FILES or None, instance=student)
+                if form.is_valid():
+                    form.save()
+                    return redirect('student:student_list')
+                return render(request, 'student_form.html', {'form': form})
+            else:
+                form = StudentForms(request.POST or None, request.FILES or None)
+                # create object
+                if form.is_valid():
+                    form.save()
+                    return redirect('student:student_list')
         return render(request, template_name, {'form': form})
     else:
-        student = get_object_or_404(Student, student_code=student_code)
+        if request.user.is_superuser:
+            student = get_object_or_404(Student, student_code=student_code)
+        else:
+            student = get_object_or_404(Student, student_code=student_code)
         form = StudentForms(request.POST or None, request.FILES or None, instance=student)
         if form.is_valid():
             form.save()
             return redirect('student:student_list')
-        return render(request, template_name, {'form': form})
+        return render(request, 'student_form.html', {'form': form})
 
 
 def student_create(request, template_name='student_form.html'):
@@ -276,7 +293,6 @@ class StudentImagesDataListViewByStudentAPI(generics.ListAPIView,
             return self.list(request)
 
 
-
 class StudentGetListCourseByStudentAPI(APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -312,7 +328,6 @@ class StudentAttendanceOfACourse(APIView):
                                                  'absent_status'))[0]
 
                 list_attendance.append(attendance)
-                print(type(list_attendance))
 
             return Response(list_attendance, status=200)
         return Response({'message': 'failed'}, status=401)
