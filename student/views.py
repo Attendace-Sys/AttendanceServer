@@ -310,14 +310,14 @@ class StudentAttendanceOfACourse(APIView):
     permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get(self, request, course_code = None, student_code = None):
-        if course_code:
+        if course_code and student_code:
             list_schedule_code = list(Schedule.objects.filter(course = course_code).values('schedule_code'))
             list_attendance = []
             for item in list_schedule_code:
-                attendance = list(Attendance.objects.filter(schedule_code = item.get('schedule_code')).filter(student = student_code).values('attendance_code', 'schedule_code', 'schedule_code__schedule_date', 'absent_status'))[0]
+                attendance = list(Attendance.objects.filter(schedule_code = item.get('schedule_code')).filter(student = student_code).values('schedule_code', 'attendance_code', 'schedule_code__schedule_number_of_day','schedule_code__schedule_date', 'absent_status'))[0]
                 
                 list_attendance.append(attendance)
                 print(type(list_attendance))
 
-            return Response(list_attendance, status=200)
+            return Response({'attendances': list_attendance}, status=200)
         return Response({'message': 'failed'}, status=401)
