@@ -321,10 +321,54 @@ class ScheduleView(CreateView):
     success_url = 'serializer/schedules'
 
 
+# API GET list student of a course
+class ListStudentOfCourseViewAPI(APIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, course_code=None, student_code = None):
+        if course_code:
+            list_student = Course.objects.filter(course_code = course_code).values('students__student_code', 'students__first_name')
+            # list_student = Course.objects.filter(course_code = course_code).annotate(student_code = 'students__student_code', student_name'students__first_name')
+
+
+            # list_schedule = Schedule.objects.filter(course = course_code).values('schedule_code'))
+            list_schedule = list(Schedule.objects.filter(course = course_code).values_list('schedule_code'))
+            
+            list_schedule_code = []
+            for item in list_schedule:               
+                list_schedule_code.append(item[0])
+            # print(list_schedule_code)
+        
+            index = 0
+            for student in list_student:
+                num_present = 0;
+                num_absent = 0;
+                list_attendance = Attendance.objects.filter(student = student_code).filter(schedule_code__in=list_schedule_code).values_list('absent_status')
+                for item in list_attendance:
+                    if (item[0] == True):
+                        num_present = num_present + 1
+                    else:
+                        num_absent = num_absent + 1
+                             
+                list_student[index].update({'num_present': num_present})
+                list_student[index].update({'num_absent': num_absent})
+
+                index = index +  1
+
+
+            print(list_student)
+            return Response({'attends': list_student}, status=200)
+        else:
+            return Response({'message': 'failed'}, status=401)
+
+
+# API Get data  And do Face Recognition
+
 def l2_normalize(x):
     return x / np.sqrt(np.sum(np.multiply(x, x)))
 
-
+from io import BytesIO
 def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_json_data, model):
     required_size = (160, 160)
 
@@ -334,7 +378,6 @@ def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_j
 
         image_data = file.read()
         image = Image.open(io.BytesIO(image_data))
-        image = image.convert('RGB')
         image = ImageOps.exif_transpose(image)
 
         list_face_array_in_img = []
@@ -349,12 +392,23 @@ def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_j
 
             resized_img = image.crop(box)
             resized_img = resized_img.resize(required_size, Image.ANTIALIAS)
-            img = img_to_array(resized_img)
+            
+            # convert to jpeg first to match with format of face images in database
+            temp_file = BytesIO()
+            resized_img.save(temp_file, format="jpeg")
+            temp_file.name = 'test.png'
+            temp_file.seek(0)
+
+            # get jpeg version
+            restored_img = Image.open(temp_file)
+            #restored_img.show()
+            img = img_to_array(restored_img)
             img = np.expand_dims(img, axis=0)
             img = preprocess_input(img)
 
             with app.graph.as_default():
                 img_vector = l2_normalize(model.predict(img)[0, :])
+                #img_vector = model.predict(img)[0, :]
                 list_face_array_in_img.append(img_vector)
 
         list_of_list_face_in_each_img.append(list_face_array_in_img)
@@ -378,13 +432,17 @@ def preprocess_image(image_path):
 def load_faces(directory, model):
     faces = list()
     # enumerate files
-    for filename in listdir(directory):
+    for filename in sorted(listdir(directory)):
         # path
         path = directory + filename
+
+        #print(path)
         # get face
         img = preprocess_image(path)
         with app.graph.as_default():
             img_vector = l2_normalize(model.predict(img)[0, :])
+            # img_vector = model.predict(img)[0, :]
+            #print(img_vector)
             faces.append(img_vector)
 
     return faces
@@ -412,13 +470,7 @@ def load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR):
 
     return train_X, train_Y
 
-
-def findEuclideanDistance(source_representation, test_representation):
-    euclidean_distance = source_representation - test_representation
-    euclidean_distance = np.sum(np.multiply(euclidean_distance, euclidean_distance))
-    euclidean_distance = np.sqrt(euclidean_distance)
-    return euclidean_distance
-
+import json
 
 @method_decorator(csrf_exempt, name='dispatch')
 @require_http_methods(["POST"])
@@ -438,41 +490,92 @@ def schedule_create(request, template_name='schedule_form.html'):
         # extract all faces in classroom images
         list_of_list_face_vector_in_each_img = get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data,
                                                                                           m_json_data, model)
+        # print(list_of_list_face_vector_in_each_img)                                                                                  
+
+                                                                                          
 
         # get all list stutdent in class
         m_schedule_code = form.data.getlist('schedule_code')[0]
         course_id = list(Schedule.objects.filter(schedule_code=m_schedule_code).values('course'))[0]
         list_student = list(Student.objects.filter(course__course_code=course_id['course']))
 
+        student_dict = {}
+        for student in list_student:
+            student_code = student.student_code
+            student_name = student.first_name
+            student_dict[student_code] = {'student_code':student_code, 'name': student_name, 'recognized': 0, 'score': 100}
+
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         STUDENT_IMG_DIR = BASE_DIR + '/media/students/'
 
         # build vectors for all faces in classroom images
         trainX, trainY = load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR)
+        print('----- ')
+        #print(trainX)
         print(trainY)
 
-        # label encode targets
-        out_encoder = LabelEncoderExt()
-        out_encoder.fit(trainY)
-        trainY = out_encoder.transform(trainY)
+        NUM_NEIGHBOR = 1
 
-        neigh = NearestNeighbors(n_neighbors=1)
+        # neigh = NearestNeighbors(n_neighbors=4, metric='cosine')
+        neigh = NearestNeighbors(n_neighbors=NUM_NEIGHBOR, metric='cosine')
         neigh.fit(trainX)
 
-        list_predict_result = []
-
-        imag_count = 0
+        # for revert
+        train_Y_arr = np.array(trainY)
+        
+        COSIN_THREADHOLD = 0.1
+        recognition_result = []
         # Threshold see: https://sefiks.com/2018/09/03/face-recognition-with-facenet-in-keras/
-        distance_threshold = 0.35
-        for face_vector_list in list_of_list_face_vector_in_each_img:
-            neigh_dist, neigh_ind = neigh.kneighbors(face_vector_list, n_neighbors=1)
-            print(neigh_dist)
-            print(neigh_ind)
+        for face_vector_list in list_of_list_face_vector_in_each_img:    
+            #face_vector_list: image vectors for faces in each image
+            neigh_dist, neigh_ind = neigh.kneighbors(face_vector_list, n_neighbors=NUM_NEIGHBOR)
 
+            #print(neigh_dist)
+            #print(neigh_ind)
+
+
+            recognized_labels = train_Y_arr[neigh_ind].flatten().tolist()
+            # filter unrecognized faces if distances surpass threadhold
+            for i in range(len(recognized_labels)):
+                if(neigh_dist[i] > COSIN_THREADHOLD):
+                    recognized_labels[i] = 'unknown'
+
+            scores = neigh_dist.flatten().tolist()
+            labels_and_scores = (recognized_labels, scores)
+            recognition_result.append(labels_and_scores)
+                
+        for i, image_info in enumerate(m_json_data):
+            face_rect = image_info['face_rect']
+            response_labels = recognition_result[i][0]
+            response_scores = recognition_result[i][1]
+
+            for index, face in enumerate(face_rect):
+                detected_student_id = response_labels[index]
+                face['student_id'] = response_labels[index]
+                face['score'] = response_scores[index]
+                detected_student_score = face['score']
+
+                if detected_student_id in student_dict:
+                        personal_dict = student_dict[detected_student_id]
+                        personal_dict['recognized'] = 1
+                        face['name'] = personal_dict['name']
+                        if personal_dict['score'] > detected_student_score:
+                            personal_dict['score'] = detected_student_score
+                else:
+                    face['name'] = 'unknown'
+        
+        list_student_with_recognition_info = list(student_dict.values())
+        list_student_with_recognition_info = sorted(list_student_with_recognition_info, key = lambda i: i['score'])
+
+
+        
         # build json to return
-        json_response = ''
+        #json_list_student = json.dumps(list_student_with_recognition_info)
+        #json_response_for_uploaded_images = json.dumps(m_json_data)
 
-        return HttpResponse(json_response, content_type='application/json')
+        json_response = {'list_student': list_student_with_recognition_info, 'json_response_for_uploaded_images': m_json_data}
+
+        return HttpResponse(json.dumps(json_response), content_type='application/json')
 
     else:
         return HttpResponse('error', content_type='application/json')
