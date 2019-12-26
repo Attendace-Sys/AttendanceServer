@@ -293,8 +293,8 @@ class StudentGetListCourseByStudentAPI(APIView):
                                                                                               'teacher',
                                                                                               'teacher',
                                                                                               'teacher__first_name'))
-            json_file = json.dumps(students, ensure_ascii=False, default=str).encode('utf8')
-            return HttpResponse(json_file, content_type='application/json', status=200)
+            # json_file = json.dumps(students, ensure_ascii=False, default=str).encode('utf8')
+            return Response({'courses':students}, status=200)
         return Response({'message': 'failed'}, status=401)
 
 
@@ -305,12 +305,11 @@ class StudentAttendanceOfACourse(APIView):
     def get(self, request, course_code = None, student_code = None):
         if course_code and student_code:
             list_schedule_code = list(Schedule.objects.filter(course = course_code).values('schedule_code'))
-            list_attendance = []
+            list_attendance = list()
             for item in list_schedule_code:
                 attendance = list(Attendance.objects.filter(schedule_code = item.get('schedule_code')).filter(student = student_code).values('schedule_code', 'attendance_code', 'schedule_code__schedule_number_of_day','schedule_code__schedule_date', 'absent_status'))[0]
                 
                 list_attendance.append(attendance)
-                print(type(list_attendance))
 
             return Response({'attendances': list_attendance}, status=200)
         return Response({'message': 'failed'}, status=401)

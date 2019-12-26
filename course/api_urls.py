@@ -1,6 +1,5 @@
 from django.urls import path, include
 from course.views import *
-from student.views import StudentAttendanceOfACourse
 
 
 urlpatterns = [
@@ -27,7 +26,4 @@ urlpatterns = [
     path('updatelist/', UpdateListAttendancesViewAPI.as_view()),
     # api upload - get data attendance from mobile app
     path('upload_checking_attendance/', UploadCheckingAttendanceViewAPI.as_view()),
-    # api get all schedule code and attendance status of a course of student
-    path('student/schedule_attendance_status/<str:course_code>/<str:student_code>', StudentAttendanceOfACourse.as_view()),
-
 ]
