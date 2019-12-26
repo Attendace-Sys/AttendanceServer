@@ -13,8 +13,6 @@ from rest_framework.response import Response
 from django.views.generic.edit import CreateView
 from rest_framework import status
 from rest_framework import generics
-# from .serializers import EmployeeSerializer
-# from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework import mixins
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
@@ -22,21 +20,18 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from course.forms import ScheduleForms
-import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
-
 from PIL import Image
 import io
-
+import json
 from keras.models import load_model
 import os
 import course.apps as app
 import keras
-
 import numpy as np
 from random import choice
 from numpy import load
@@ -45,7 +40,6 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import Normalizer
 from sklearn.neighbors import NearestNeighbors
 from course.label_encoder_ext import LabelEncoderExt
-
 from django.utils.datastructures import MultiValueDict
 from numpy import asarray
 import json
@@ -56,7 +50,6 @@ from numpy import expand_dims
 from numpy import asarray
 import tensorflow as tf
 from sklearn import preprocessing
-
 import numpy as np
 from keras.models import Model, Sequential
 from keras.layers import Input, Convolution2D, ZeroPadding2D, MaxPooling2D, Flatten, Dense, Dropout, Activation
@@ -66,7 +59,6 @@ from keras.applications.imagenet_utils import preprocess_input
 from keras.preprocessing import image
 from keras.models import model_from_json
 from os import listdir
-# https://github.com/serengil/tensorflow-101/blob/master/python/facenet.ipynb
 from keras.applications.imagenet_utils import preprocess_input
 from os import listdir
 from os.path import isdir
@@ -498,3 +490,5 @@ class ScheduleImagesDataView(viewsets.ModelViewSet):
 class ScheduleSerializerView(viewsets.ModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
+
+

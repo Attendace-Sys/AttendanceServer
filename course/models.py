@@ -140,6 +140,14 @@ class Course(models.Model):
                 self.create_schedule(*args, **kwargs)
         return instance
 
+    def __init__(self, *args, **kwargs):
+        super(Course, self).__init__(*args, **kwargs)
+        if self.start_day is not None and self.end_day is not None and (self.start_day <= self.end_day):
+            self.create_schedule(*args, **kwargs)
+
+    def __str__(self):
+        return self.course_name
+
     class Meta:
         verbose_name_plural = 'Quản lý Lớp học'
 
@@ -156,14 +164,25 @@ class Schedule(models.Model):
     def save(self, *args, **kwargs):
         super(Schedule, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.schedule_code
+
 
 class Attendance(models.Model):
     attendance_code = models.CharField(max_length=50, null=False, primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
     schedule_code = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
     absent_status = models.BooleanField(default=False)
+
     # save to student_name folder
-    image_data = models.FileField(upload_to='media/students/images/}', null=True)
+
+    def path_and_rename(self, name):
+        # get filename
+        filename = 'students/{0}/images/{1}'.format(self.student, self.image_data.name)
+        # return the whole path to the file
+        return filename
+
+    image_data = models.FileField(upload_to=path_and_rename, null=True)
 
     @property
     def date(self):
@@ -180,8 +199,18 @@ class Attendance(models.Model):
 
 class ScheduleImagesData(models.Model):
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
-    # save picture to student folder
-    image_data = models.FileField(upload_to='media/', blank=False, null=False)
+
+    def path_and_rename(self, name):
+        # get filename course_code = list(Schedule.objects.filter(schedule_code=self.schedule).values_list(
+        # 'course__course_code', flat=True).distinct())[0]
+        course_code, schedule_number_of_day = list(
+            Schedule.objects.filter(schedule_code=self.schedule).values_list('course__course_code',
+                                                                             'schedule_number_of_day').distinct())[0]
+        filename = 'schedule/{0}/{1}/{2}'.format(course_code, schedule_number_of_day, self.image_data.name)
+        # return the whole path to the file
+        return filename
+
+    image_data = models.FileField(upload_to=path_and_rename, blank=False, null=False)
     image_date_upload = models.DateField(auto_now_add=True, null=True)
 
     def save(self, *args, **kwargs):

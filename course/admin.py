@@ -116,7 +116,7 @@ class CourseAdmin(ImportExportModelAdmin):
     def children_display(self, obj):
         return ", ".join([
             # students.student_code for students in obj.students.all()
-            students.__str__() for students in obj.students.all()
+            students.first_name for students in obj.students.all()
         ])
 
     children_display.short_description = "Students List"
@@ -166,41 +166,7 @@ class CourseAdmin(ImportExportModelAdmin):
 
         tmp_storage.save(data, input_format.get_read_mode())
         return tmp_storage
-    """
 
-    def export_action(self, request, *args, **kwargs):
-        if not self.has_export_permission(request):
-            raise PermissionDenied
-
-        formats = self.get_export_formats()
-        form = ExportForm(formats, request.POST or None)
-        if form.is_valid():
-            file_format = formats[
-                int(form.cleaned_data['file_format'])
-            ]()
-
-            queryset = self.get_export_queryset(request)
-            export_data = self.get_export_data(file_format, queryset, request=request)
-            content_type = file_format.get_content_type()
-            response = HttpResponse(export_data, content_type=content_type)
-            response['Content-Disposition'] = 'attachment; filename="%s"' % (
-                self.get_export_filename(request, queryset, file_format),
-            )
-
-            post_export.send(sender=None, model=self.model)
-            return response
-
-        context = self.get_export_context_data()
-
-        context.update(self.admin_site.each_context(request))
-
-        context['title'] = _("Export")
-        context['form'] = form
-        context['opts'] = self.model._meta
-        request.current_app = self.admin_site.name
-        return TemplateResponse(request, [self.export_template_name],
-                                context)
-    """
     def import_action(self, request, *args, **kwargs):
         if not self.has_import_permission(request):
             raise PermissionDenied
@@ -260,12 +226,7 @@ class CourseAdmin(ImportExportModelAdmin):
                           t_class_time_calendar, t_class_time_begin_time])
 
             wb.save(import_file)
-            # ===============================================================================================
-            # memory file or else based on settings upload handlers
             tmp_storage = self.write_to_tmp_storage(import_file, input_format)
-
-            # then read the file, using the proper format-specific mode
-            # warning, big files may exceed memory
             try:
                 data = tmp_storage.read(input_format.get_read_mode())
                 if not input_format.is_binary() and self.from_encoding:
@@ -277,12 +238,8 @@ class CourseAdmin(ImportExportModelAdmin):
             except Exception as e:
                 return HttpResponse(
                     _(u"<h1>%s encountered while trying to read file: %s</h1>" % (type(e).__name__, import_file.name)))
-
-            # prepare kwargs for import data, if needed
             res_kwargs = self.get_import_resource_kwargs(request, form=form, *args, **kwargs)
             resource = self.get_import_resource_class()(**res_kwargs)
-
-            # prepare additional kwargs for import_data, if needed
             imp_kwargs = self.get_import_data_kwargs(request, form=form, *args, **kwargs)
             result = resource.import_data(dataset, dry_run=True,
                                           raise_errors=False,
@@ -330,27 +287,34 @@ class ScheduleImagesDataInline(admin.TabularInline):
 
 
 class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('schedule_code', 'course', 'schedule_date', 'schedule_number_of_day')
+    list_display = ('schedule_code', 'course_info', 'schedule_date', 'schedule_number_of_day')
     search_fields = ('schedule_code',)
     inlines = (ScheduleImagesDataInline,)
     fieldsets = (
         (None, {
-            'fields': ('course',  'schedule_number_of_day')
+            'fields': ('course', 'schedule_number_of_day')
         }),
     )
+    search_fields = ('course',)
     readonly_fields = ['schedule_code', 'course', 'schedule_date', 'schedule_number_of_day']
     # filter_horizontal = ('students',)
     list_filter = (
         ('course', RelatedDropdownFilter),
-        # ('start_day', DateRangeFilter), ('end_day', DateTimeRangeFilter),
+        ('schedule_date', DateRangeFilter),
     )
 
     list_per_page = 20
     raw_id_fields = ["course", ]
 
+    @staticmethod
+    def course_info(obj):
+        return obj.course.course_name + " - " + obj.course.course_code + ""
+
+    course_info.short_description = 'Course'
+
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
-            return self.readonly_fields + ['schedule_code', 'course', 'schedule_date', 'schedule_number_of_day' ]
+            return self.readonly_fields + ['schedule_code', 'course', 'schedule_date', 'schedule_number_of_day']
         return self.readonly_fields
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -365,8 +329,15 @@ class ScheduleChoiceField(forms.ModelChoiceField):
         return "{0}: {1} {2}".format(obj.course, obj.schedule_code, obj.schedule_number_of_day)
 
 
+class AttendanceChoiceField(forms.ModelChoiceField):
+    @staticmethod
+    def label_from_instance(obj):
+        return "{0}: {1}".format(obj.student_code, obj.first_name)
+
+
 class AttendanceAdmin(admin.ModelAdmin):
-    list_display = ('attendance_code', 'student', 'schedule_code', 'date', 'absent_status', 'image_data',)
+    list_display = ('course_info', 'attendance_code', 'student_info', 'schedule_code', 'date', 'absent_status',
+                    'image_data',)
     search_fields = ('attendance_code',)
 
     fieldsets = (
@@ -375,20 +346,37 @@ class AttendanceAdmin(admin.ModelAdmin):
         }),
 
     )
-    # filter_horizontal = ('students',)
+    # filter_horizontal = ('schedule_code',)
     list_filter = (
         ('student', RelatedDropdownFilter),
         ('schedule_code', RelatedDropdownFilter),
     )
 
     list_per_page = 20
-    raw_id_fields = ["schedule_code", ]
-    """
+    raw_id_fields = ["schedule_code", "student"]
+
+    # def get_readonly_fields(self, request, obj=None):
+    #   if obj:  # editing an existing object
+    #       return self.readonly_fields + ('student_info', 'field2')
+    #   return self.readonly_fields
+
+    @staticmethod
+    def student_info(obj):
+        return obj.student.first_name
+
+    student_info.short_description = 'Student'
+
+    @staticmethod
+    def course_info(obj):
+        course_code = (Schedule.objects.filter(schedule_code=obj.schedule_code).values_list('course__course_name'))[0]
+        return course_code
+
+    course_info.short_description = 'Course'
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'course':
-            return CourseChoiceField(queryset=Course.objects.all())
+        if db_field.name == 'student':
+            return AttendanceChoiceField(queryset=Student.objects.all())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-    """
 
 
 admin.site.register(Attendance, AttendanceAdmin)
