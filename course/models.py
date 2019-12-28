@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import date
 from datetime import timedelta
 from DjangoAPI import settings
-
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your models here.
 
@@ -91,8 +91,6 @@ class Course(models.Model):
             attendance.attendance_code = schedule.schedule_code + '-' + student.student_code
             attendance.student = student
             attendance.schedule_code = schedule
-            attendance.absent_status = False
-            attendance.checked_status = False
             attendance.image_data = None
             attendance.save()
 
@@ -137,13 +135,15 @@ class Course(models.Model):
         if self.pk:
             # do when create
             if self.start_day is not None and self.end_day is not None and (self.start_day <= self.end_day):
-                self.create_schedule(*args, **kwargs)
+                self.create_schedule(self, *args, **kwargs)
         return instance
 
     def __init__(self, *args, **kwargs):
         super(Course, self).__init__(*args, **kwargs)
-        if self.start_day is not None and self.end_day is not None and (self.start_day <= self.end_day):
-            self.create_schedule(*args, **kwargs)
+        schedule = Schedule.objects.filter(course=self.course_code)
+        if schedule is None:
+            if self.start_day is not None and self.end_day is not None and (self.start_day <= self.end_day):
+                self.create_schedule(*args, **kwargs)
 
     def __str__(self):
         return self.course_name

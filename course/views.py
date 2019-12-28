@@ -110,11 +110,14 @@ class CourseListViewByTeacherAPI(generics.ListAPIView,
                                  mixins.RetrieveModelMixin,
                                  mixins.UpdateModelMixin,
                                  mixins.DestroyModelMixin):
-    queryset = Course.objects.all()
+    queryset = Course.objects.filter()
     serializer_class = CourseSerializer
     lookup_field = 'teacher'
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def put(self, request, teacher=None):
+        return self.update(request, teacher)
 
     def get(self, request, teacher=None):
         if teacher:
