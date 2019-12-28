@@ -321,7 +321,7 @@ class ListStudentOfCourseViewAPI(APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def get(self, request, course_code=None, student_code = None):
+    def get(self, request, course_code=None):
         if course_code:
             list_student = Course.objects.filter(course_code = course_code).values('students__student_code', 'students__first_name')
             # list_student = Course.objects.filter(course_code = course_code).annotate(student_code = 'students__student_code', student_name'students__first_name')
@@ -339,7 +339,7 @@ class ListStudentOfCourseViewAPI(APIView):
             for student in list_student:
                 num_present = 0;
                 num_absent = 0;
-                list_attendance = Attendance.objects.filter(student = student_code).filter(schedule_code__in=list_schedule_code).values_list('absent_status')
+                list_attendance = Attendance.objects.filter(student = student.get('students__student_code')).filter(schedule_code__in=list_schedule_code).values_list('absent_status')
                 for item in list_attendance:
                     if (item[0] == True):
                         num_present = num_present + 1
