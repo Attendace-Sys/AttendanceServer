@@ -75,9 +75,28 @@ class User(AbstractUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        return True
-
-
+        return self.is_superuser
+    """
+    def has_perm(self, perm, obj=None):
+        if self.is_superuser:
+            return True
+        if self.is_teacher:
+            if perm == 'student.add_student' or perm == 'student.change_student' or \
+                    perm == 'student.delete_student' or perm == 'student.view_student' or \
+                    perm == 'student.add_studentimagesdata' or perm == 'student.change_studentimagesdata' or \
+                    perm == 'student.delete_studentimagesdata' or perm == 'student.view_studentimagesdata' or \
+                    perm == 'teacher.add_teacher' or perm == 'teacher.change_teacher' or \
+                    perm == 'teacher.delete_teacher' or perm == 'teacher.view_teacher' or \
+                    perm == 'course.add_course' or perm == 'course.change_course' or \
+                    perm == 'course.delete_course' or perm == 'course.view_course' or \
+                    perm == 'course.add_schedule' or perm == 'course.change_schedule' or \
+                    perm == 'course.delete_schedule' or perm == 'course.view_schedule' or \
+                    perm == 'course.add_scheduleimagesdata' or perm == 'course.change_scheduleimagesdata' or \
+                    perm == 'course.delete_scheduleimagesdata' or perm == 'course.view_scheduleimagesdata' or \
+                    perm == 'course.add_attendance' or perm == 'course.change_attendance' or \
+                    perm == 'course.delete_attendance' or perm == 'course.view_attendance':
+                return True
+    """
     def has_module_perms(self, app_label):
         """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
