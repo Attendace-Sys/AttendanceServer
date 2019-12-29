@@ -39,25 +39,36 @@ class TeacherAdmin(ImportExportModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'teacher_code', 'first_name', 'email', 'teacher_image',
-                'password', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions', ),
+                'teacher_code', 'password', 'first_name', 'email', 'teacher_image',
+                ),
         }),
         ('Advance options', {
             'fields': ('date_joined', 'teacher_full_image_show'),
             'description': 'option advance',
-            'classes': ('collapse',),
+            'classes': ('',),
+            # colapse
         }),
     )
     list_filter = (
         ('teacher_code', DropdownFilter),
-        # ('Course', RelatedDropdownFilter)
     )
 
     filter_horizontal = ('groups', 'user_permissions')
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            queryset = Teacher.objects.all()
+        else:
+            try:
+                queryset = Teacher.objects.filter(username=request.user.username)
+            except:
+                queryset = Teacher.objects.none()
+        return queryset
+
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
-            return self.readonly_fields + ['teacher_code', ]
+            return self.readonly_fields + ['teacher_code', 'username', 'is_superuser']
         return self.readonly_fields
 
     @staticmethod

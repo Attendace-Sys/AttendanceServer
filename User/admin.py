@@ -81,24 +81,35 @@ class UserAdmin(BaseUserAdmin):
     # list_display = ('username', 'password', 'email',  'is_staff')
     list_display = ('username', 'password', 'email', 'date_joined',
                     'is_staff', 'is_superuser', 'is_active',)
-    filter_horizontal = ('groups', 'user_permissions')
+
     list_filter = ('is_staff',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_superuser', 'is_active', 'groups', 'user_permissions',)}),
+        (None, {'fields': ('first_name', 'email', 'password')}),
+        ('Permissions', {'fields': ('is_staff', 'is_superuser', 'is_active', )}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_superuser', 'is_active', 'groups',
+            'fields': ('username', 'email', 'password1', 'password2', 'is_staff', 'is_superuser', 'is_active',
                        'user_permissions'),
         }),
     )
+    filter_horizontal = ('user_permissions',)
     search_fields = ('email',)
     ordering = ('email',)
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            queryset = User.objects.all()
+        else:
+            try:
+                queryset = User.objects.filter(username=request.user.username)
+            except:
+                queryset = User.objects.none()
+        return queryset
 
 # Register your models Teacher.
 admin.site.register(User, UserAdmin)

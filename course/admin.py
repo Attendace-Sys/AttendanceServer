@@ -59,6 +59,7 @@ from course.resources import CoursesResource
 from import_export.resources import ModelResource
 from student.models import Student
 from student.admin import StudentAdmin
+import json
 
 
 # Register your models here.
@@ -96,6 +97,22 @@ class CourseAdmin(ImportExportModelAdmin):
     date_hierarchy = 'start_day'
     raw_id_fields = ["teacher", ]
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.annotate(
+            student_count=Count("students", distinct=True),
+        )
+
+        if request.user.is_superuser:
+            queryset = Course.objects.all().annotate(student_count=Count("students", distinct=True), )
+        else:
+            try:
+                queryset = Course.objects.filter(teacher=request.user.username).annotate(
+                    student_count=Count("students", distinct=True), )
+            except:
+                queryset = Course.objects.none().annotate(student_count=Count("students", distinct=True), )
+        return queryset
+
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
             return self.readonly_fields + ['course_code', ]
@@ -120,13 +137,6 @@ class CourseAdmin(ImportExportModelAdmin):
         ])
 
     children_display.short_description = "Students List"
-
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        queryset = queryset.annotate(
-            student_count=Count("students", distinct=True),
-        )
-        return queryset
 
     @staticmethod
     def student_count(obj):
@@ -306,6 +316,17 @@ class ScheduleAdmin(admin.ModelAdmin):
     list_per_page = 20
     raw_id_fields = ["course", ]
 
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            queryset = Schedule.objects.all()
+        else:
+            try:
+                queryset = Schedule.objects.filter(course__teacher__username=request.user.username)
+            except:
+                queryset = Course.objects.none()
+        return queryset
+
     @staticmethod
     def course_info(obj):
         return obj.course.course_name + " - " + obj.course.course_code + ""
@@ -354,6 +375,17 @@ class AttendanceAdmin(admin.ModelAdmin):
 
     list_per_page = 20
     raw_id_fields = ["schedule_code", "student"]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            queryset = Attendance.objects.all()
+        else:
+            try:
+                queryset = Attendance.objects.filter(schedule_code__course__teacher__username=request.user.username)
+            except:
+                queryset = Attendance.objects.none()
+        return queryset
 
     # def get_readonly_fields(self, request, obj=None):
     #   if obj:  # editing an existing object

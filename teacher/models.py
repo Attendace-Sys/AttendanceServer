@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from User.models import User
+from guardian.shortcuts import assign_perm
 # -*- coding: utf-8 -*-
 
 
@@ -22,6 +23,8 @@ class Teacher(User):
 
     class Meta:
         verbose_name_plural = 'Quản lý giáo viên'
+        permissions = (
+        )
 
     def __str__(self):
         return self.first_name + self.last_name
@@ -38,3 +41,6 @@ class Teacher(User):
             self.password = "" + self.teacher_code
         self.set_password(self.password)
         super(Teacher, self).save(*args, **kwargs)
+
+    def __init__(self, *args, **kwargs):
+        super(Teacher, self).__init__(*args, **kwargs)

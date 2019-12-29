@@ -71,26 +71,27 @@ class StudentAdmin(ImportExportModelAdmin,):
         'first_name': 'Full Name'
     }
     list_display = (
-        'student_code', 'get_full_name', 'email', 'username', 'password',
-        'comment',)
+        'student_code', 'get_full_name', 'email', 'username',)
     readonly_fields = []
     list_filter = ('student_code',)
     search_fields = ('student_code',)
     inlines = (ImageInline,)
     fieldsets = (
         (None, {
-            'fields': ('student_code', 'first_name', 'email', 'student_video_data', 'comment',)
+            'fields': ('student_code', 'password', 'first_name', 'email', 'student_video_data', 'comment',)
         }),
-        ('Options', {
-            'fields': ('username', 'password',),
-            'description': 'option advance',
-            'classes': ('collapse',),
+    )
+
+    add_fieldsets = (
+        (None, {
+            # 'classes': ('wide',),
+            'fields': ('student_code', 'first_name', 'email', 'password1', 'password2',),
         }),
     )
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
-            return self.readonly_fields + ['student_code', ]
+            return self.readonly_fields + ['student_code', 'username', 'password']
         return self.readonly_fields
 
     def get_full_name(self, obj):

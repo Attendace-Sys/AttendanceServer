@@ -201,8 +201,6 @@ class ScheduleImagesData(models.Model):
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
 
     def path_and_rename(self, name):
-        # get filename course_code = list(Schedule.objects.filter(schedule_code=self.schedule).values_list(
-        # 'course__course_code', flat=True).distinct())[0]
         course_code, schedule_number_of_day = list(
             Schedule.objects.filter(schedule_code=self.schedule).values_list('course__course_code',
                                                                              'schedule_number_of_day').distinct())[0]
