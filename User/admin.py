@@ -57,11 +57,18 @@ class UserChangeForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    password = ReadOnlyPasswordHashField()
+    password = ReadOnlyPasswordHashField(label="Password",
+                                         help_text=("Raw passwords are not stored, so there is no way to see "
+                                                    "this user's password, but you can change the password "
+                                                    "using <a href=\'../password/\'>this form</a>."))
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'is_active', 'is_staff')
+
+        widgets = {
+            'password': forms.PasswordInput(render_value=True),
+        }
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -85,7 +92,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_staff',)
     fieldsets = (
         (None, {'fields': ('first_name', 'email', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_superuser', 'is_active', )}),
+        ('Permissions', {'fields': ('is_staff', 'is_superuser', 'is_active',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -110,6 +117,7 @@ class UserAdmin(BaseUserAdmin):
             except:
                 queryset = User.objects.none()
         return queryset
+
 
 # Register your models Teacher.
 admin.site.register(User, UserAdmin)

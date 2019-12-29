@@ -34,7 +34,7 @@ class TeacherAdmin(ImportExportModelAdmin):
     date_created = 'date_joined'
     list_per_page = 10
     actions = ['delete_media', ]
-    readonly_fields = ['date_joined', 'days_since_creation', 'teacher_full_image_show']
+    readonly_fields = ['date_joined', 'days_since_creation', 'teacher_full_image_show', 'password']
 
     fieldsets = (
         (None, {
@@ -68,7 +68,7 @@ class TeacherAdmin(ImportExportModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:  # editing an existing object
-            return self.readonly_fields + ['teacher_code', 'username', 'is_superuser']
+            return self.readonly_fields + ['teacher_code', 'username', 'password', 'is_superuser', ]
         return self.readonly_fields
 
     @staticmethod
