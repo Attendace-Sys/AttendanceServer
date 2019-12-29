@@ -36,7 +36,6 @@ class Teacher(User):
         self.last_name = ""
         if self.username == "":
             self.username = "" + self.teacher_code
-        print(self.username)
         if self.password == "":
             self.password = "" + self.teacher_code
         self.set_password(self.password)

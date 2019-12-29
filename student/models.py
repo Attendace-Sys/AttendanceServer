@@ -38,12 +38,12 @@ class Student(User):
         # default username and password
         self.is_student = True
         self.is_staff = True
-        if self.student_video_data is None:
-            self.student_video_data = ""
         self.email = "" + self.get_student_code() + "@gm.uit.edu.vn"
         self.last_name = ""
-        self.username = "" + str(self.student_code)
-        # self.password = "" + str(self.student_code)
+        if self.username == "":
+            self.username = "" + str(self.student_code)
+        if self.password == "":
+            self.password = "" + str(self.student_code)
         self.set_password(str(self.student_code))
         super(Student, self).save(*args, **kwargs)
 
