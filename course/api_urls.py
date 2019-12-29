@@ -27,6 +27,6 @@ urlpatterns = [
     # api upload - get data attendance from mobile app
     path('upload_checking_attendance/', UploadCheckingAttendanceViewAPI.as_view()),
     #api GET list student of a course
-    path('courses/list_student/<str:course_code>/<str:student_code>/', ListStudentOfCourseViewAPI.as_view()),
+    path('courses/list_student/<str:course_code>/', ListStudentOfCourseViewAPI.as_view()),
     
 ]
