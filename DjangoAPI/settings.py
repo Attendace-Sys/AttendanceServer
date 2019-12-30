@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'rangefilter',
     'import_export',
     'rest_framework.authtoken',
-
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -200,3 +200,7 @@ ADMIN_VIEW_PERMISSION_MODELS = [
     'auth.User',
     'auth.student'
 ]
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)

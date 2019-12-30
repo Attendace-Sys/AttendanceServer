@@ -62,6 +62,10 @@ from os import listdir
 from keras.applications.imagenet_utils import preprocess_input
 from os import listdir
 from os.path import isdir
+import numpy as np
+import face_recognition
+from keras.preprocessing.image import load_img
+import random
 
 
 class CourseListViewAPI(generics.ListAPIView,
@@ -351,101 +355,93 @@ class ListStudentOfCourseViewAPI(APIView):
 
                 index = index +  1
 
-
-            print(list_student)
             return Response({'attends': list_student}, status=200)
         else:
             return Response({'message': 'failed'}, status=401)
 
 
 # API Get data  And do Face Recognition
-
-def l2_normalize(x):
-    return x / np.sqrt(np.sum(np.multiply(x, x)))
-
 from io import BytesIO
-def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_json_data, model):
+def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_json_data):
     required_size = (160, 160)
 
     index = 0
     list_of_list_face_in_each_img = []
+
     for file in in_memory_uploaded_file_data:
 
         image_data = file.read()
-        image = Image.open(io.BytesIO(image_data))
-        image = ImageOps.exif_transpose(image)
+        test_image = Image.open(io.BytesIO(image_data))
+        # test_image = ImageOps.exif_transpose(image)
 
-        list_face_array_in_img = []
-
+        list_face_vector_in_img = []
         list_face_rect_in_img = m_json_data[index]['face_rect']
         for rect in list_face_rect_in_img:
             x1 = rect['left']
             x2 = rect['right']
-            y1 = rect['top']
+            y1= rect['top']
             y2 = rect['bottom']
-            box = (x1, y1, x2, y2)
-
-            resized_img = image.crop(box)
+            box =(x1, y1, x2, y2)
+            #print(box)
+            resized_img = test_image.crop(box)
             resized_img = resized_img.resize(required_size, Image.ANTIALIAS)
             
-            # convert to jpeg first to match with format of face images in database
             temp_file = BytesIO()
             resized_img.save(temp_file, format="jpeg")
-            temp_file.name = 'test.png'
+            temp_file.name = 'test.jpg'
             temp_file.seek(0)
-
-            # get jpeg version
             restored_img = Image.open(temp_file)
-            #restored_img.show()
-            img = img_to_array(restored_img)
-            img = np.expand_dims(img, axis=0)
-            img = preprocess_input(img)
+            restored_img = np.array(restored_img)
+            try:
+                img_vector = face_recognition.face_encodings(restored_img, known_face_locations=[(0,160,160,0)])[0]
+            except IndexError:
+                img_vector = np.zeros(128)
+                pass
+            list_face_vector_in_img.append(img_vector)
 
-            with app.graph.as_default():
-                img_vector = l2_normalize(model.predict(img)[0, :])
-                #img_vector = model.predict(img)[0, :]
-                list_face_array_in_img.append(img_vector)
-
-        list_of_list_face_in_each_img.append(list_face_array_in_img)
-        index = index + 1
+        list_of_list_face_in_each_img.append(list_face_vector_in_img)
+        index += 1
 
     return list_of_list_face_in_each_img
 
-
 def preprocess_image(image_path):
     img = load_img(image_path, target_size=(160, 160))
-    img = img_to_array(img)
-    img = np.expand_dims(img, axis=0)
-
-    # preprocess_input normalizes input in scale of [-1, +1]. You must apply same normalization in prediction.
-    # Ref: https://github.com/keras-team/keras-applications/blob/master/keras_applications/imagenet_utils.py (Line 45)
-    img = preprocess_input(img)
-    return img
-
-
+    return np.array(img)
+ 
+import time
 # load images and extract faces for all images in a directory
-def load_faces(directory, model):
-    faces = list()
-    # enumerate files
-    for filename in sorted(listdir(directory)):
-        # path
-        path = directory + filename
+def load_faces(directory):
+  faces = list()
+  paths = list()
+  # enumerate files
+  for filename in sorted(listdir(directory)):
+    path = directory + filename
+    # print(path)
+	  # get face
+    start_time = time.time()
+    img = preprocess_image(path)
 
-        #print(path)
-        # get face
-        img = preprocess_image(path)
-        with app.graph.as_default():
-            img_vector = l2_normalize(model.predict(img)[0, :])
-            # img_vector = model.predict(img)[0, :]
-            #print(img_vector)
-            faces.append(img_vector)
+    try:
+      #(top, right, bottom, left)
 
-    return faces
+      img_vector = face_recognition.face_encodings(img, known_face_locations=[(0,160,160,0)])[0]
+      #---> array [[128-d vector for face 1], [128-d vector for face 2], ....]
+      print("extract 1 img vector--- %s seconds ---" % (time.time() - start_time))
 
+      faces.append(img_vector)
 
-def load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR):
+      if len(paths) == 0:
+        paths.append(path)
+    except IndexError:
+      #print(path)
+      pass
+
+  return (faces, paths)
+
+def load_student_trainX_trainY(list_student, STUDENT_IMG_DIR):
     train_X = []
     train_Y = []
+    check_paths = []
 
     for student in list_student:
         student_code = student.student_code
@@ -455,13 +451,12 @@ def load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR):
         if not isdir(student_img_folder):
             continue
 
-        # load all faces in the subdirectory
-        faces = load_faces(student_img_folder, model)
-        # create labels
-        labels = [student_code for _ in range(len(faces))]
-
-        train_X.extend(faces)
+        faces_paths = load_faces(student_img_folder)
+        labels = [student_code for _ in range(len(faces_paths[0]))]
+        # print(len(labels))
+        train_X.extend(faces_paths[0])
         train_Y.extend(labels)
+        check_paths.extend(faces_paths[1])
 
     return train_X, train_Y
 
@@ -471,23 +466,26 @@ import json
 @require_http_methods(["POST"])
 def schedule_create(request, template_name='schedule_form.html'):
     if request.method == 'POST':
+        import time
+
+        start_time = time.time()
 
         form = ScheduleForms(request.POST or None, request.FILES or None)
         # boundingBox in class room images
         m_json_str = form.data.getlist('json_data')[0]
         m_json_data = json.loads(m_json_str)
 
-        model = app.keras_model
-
+        print(m_json_data)
+    
         # class room images
         in_memory_uploaded_file_data = request.FILES.getlist('files')
 
         # extract all faces in classroom images
         list_of_list_face_vector_in_each_img = get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data,
-                                                                                          m_json_data, model)
-        # print(list_of_list_face_vector_in_each_img)                                                                                  
-
-                                                                                          
+                                                                                          m_json_data)
+        print(np.shape(list_of_list_face_vector_in_each_img))
+         
+        print("get_list_of_list_face_vector_in_class_imgs--- %s seconds ---" % (time.time() - start_time))
 
         # get all list stutdent in class
         m_schedule_code = form.data.getlist('schedule_code')[0]
@@ -504,21 +502,19 @@ def schedule_create(request, template_name='schedule_form.html'):
         STUDENT_IMG_DIR = BASE_DIR + '/media/students/'
 
         # build vectors for all faces in classroom images
-        trainX, trainY = load_student_trainX_trainY(list_student, model, STUDENT_IMG_DIR)
-        print('----- ')
-        #print(trainX)
-        print(trainY)
+        trainX, trainY = load_student_trainX_trainY(list_student, STUDENT_IMG_DIR)
+
+        print("load_student_trainX_trainY--- %s seconds ---" % (time.time() - start_time))
+
 
         NUM_NEIGHBOR = 1
-
-        # neigh = NearestNeighbors(n_neighbors=4, metric='cosine')
         neigh = NearestNeighbors(n_neighbors=NUM_NEIGHBOR, metric='cosine')
         neigh.fit(trainX)
 
         # for revert
         train_Y_arr = np.array(trainY)
         
-        COSIN_THREADHOLD = 0.1
+        COSIN_THREADHOLD = 0.6
         recognition_result = []
         # Threshold see: https://sefiks.com/2018/09/03/face-recognition-with-facenet-in-keras/
         for face_vector_list in list_of_list_face_vector_in_each_img:    
@@ -527,7 +523,6 @@ def schedule_create(request, template_name='schedule_form.html'):
 
             #print(neigh_dist)
             #print(neigh_ind)
-
 
             recognized_labels = train_Y_arr[neigh_ind].flatten().tolist()
             # filter unrecognized faces if distances surpass threadhold
@@ -538,7 +533,8 @@ def schedule_create(request, template_name='schedule_form.html'):
             scores = neigh_dist.flatten().tolist()
             labels_and_scores = (recognized_labels, scores)
             recognition_result.append(labels_and_scores)
-                
+
+        print(recognition_result)        
         for i, image_info in enumerate(m_json_data):
             face_rect = image_info['face_rect']
             response_labels = recognition_result[i][0]
@@ -562,15 +558,15 @@ def schedule_create(request, template_name='schedule_form.html'):
         list_student_with_recognition_info = list(student_dict.values())
         list_student_with_recognition_info = sorted(list_student_with_recognition_info, key = lambda i: i['score'])
 
-
-        
-        # build json to return
-        #json_list_student = json.dumps(list_student_with_recognition_info)
-        #json_response_for_uploaded_images = json.dumps(m_json_data)
-
         json_response = {'list_student': list_student_with_recognition_info, 'json_response_for_uploaded_images': m_json_data}
 
-        return HttpResponse(json.dumps(json_response), content_type='application/json')
+        response_str = json.dumps(json_response)
+        print(response_str)
+        print("response_str--- %s seconds ---" %
+              (time.time() - start_time))
+
+        
+        return HttpResponse(response_str, content_type='application/json')
 
     else:
         return HttpResponse('error', content_type='application/json')
