@@ -10,7 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect, get_object_or_404
-import json
 from .serializers import StudentImagesDataSerializer, StudentSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import login as django_login, logout as django_logout

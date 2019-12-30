@@ -70,7 +70,13 @@ class StudentImagesData(models.Model):
     image_data = models.FileField(upload_to=path_and_rename, blank=False, null=False)
     image_date_upload = models.DateTimeField(auto_now_add=True, null=True)
 
+    def convert_image_to_text(self):
+        return "abcxyz"
+
+    image_vector = models.TextField(default="", blank=False, null=False)
+
     def save(self, *args, **kwargs):
+        self.image_vector = convert_image_to_text
         super(StudentImagesData, self).save(*args, **kwargs)
 
     def __str__(self):
