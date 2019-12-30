@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'rangefilter',
     'import_export',
     'rest_framework.authtoken',
+    'guardian',
+
 
 ]
 
@@ -108,7 +110,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysqldatabase',
         'USER': 'root',
-        'PASSWORD': 'Lethimylinh123',
+        'PASSWORD': 'Linhkute123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
@@ -198,5 +200,9 @@ PASSWORD_HASHERS = [
 ADMIN_VIEW_PERMISSION_MODELS = [
     # 'User.User',
     'auth.User',
-    'auth.student'
+    # 'auth.student'
 ]
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
