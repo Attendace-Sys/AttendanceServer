@@ -16,7 +16,7 @@ class CourseConfig(AppConfig):
         # to avoid AppRegistryNotReady exception 
         # startup code here
         # # load keras model
-        global keras_model
+        '''global keras_model
         global graph
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,6 +27,6 @@ class CourseConfig(AppConfig):
         keras_model.load_weights(BASE_DIR + '/course/facenet_weights.h5')
 
         # keras_model = load_model(BASE_DIR + '/course/facenet_keras.h5')
-        graph = tf.get_default_graph()
+        graph = tf.get_default_graph()'''
 
 
