@@ -15,11 +15,12 @@ class StudentForms(forms.ModelForm):
     student_video_data = forms.FileField(required=False)
     username = forms.CharField(required=False)
     password = forms.CharField(required=False)
+
     class Meta:
         model = Student
         fields = ['student_code', 'first_name', 'email', 'username', 'password', 'student_video_data']
 
-    files = MultiFileField(min_num=1, max_num=15, max_file_size=1024 * 1024 * 5)
+    files = MultiFileField(min_num=1, max_num=15, max_file_size=1024 * 1024 * 5, required=False)
 
     def save(self, commit=True):
         instance = super(StudentForms, self).save(commit)

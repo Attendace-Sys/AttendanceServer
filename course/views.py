@@ -498,6 +498,7 @@ def schedule_create(request, template_name='schedule_form.html'):
         start_time = time.time()
 
         form = ScheduleForms(request.POST or None, request.FILES or None)
+
         # boundingBox in class room images
         m_json_str = form.data.getlist('json_data')[0]
         m_json_data = json.loads(m_json_str)
@@ -593,11 +594,11 @@ def schedule_create(request, template_name='schedule_form.html'):
         print(response_str)
         print("response_str--- %s seconds ---" %
               (time.time() - start_time))
-
-        form = ScheduleForms(request.POST or None, request.FILES or None)
-        instance = super(ScheduleForms, form).save(commit)
-        for each in self.cleaned_data['files']:
-            ScheduleImagesData.objects.create(image_data=each, schedule=instance)
+        # save form here
+        schedule_code = form.data.get('schedule_code')
+        schedule = get_object_or_404(Schedule, schedule_code=schedule_code)
+        for each in in_memory_uploaded_file_data:
+            ScheduleImagesData.objects.create(image_data=each, schedule=schedule)
 
         return HttpResponse(response_str, content_type='application/json')
 

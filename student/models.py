@@ -43,14 +43,12 @@ class Student(User):
         # default username and password
         self.is_student = True
         self.is_staff = True
-        if self.email is None:
+        if self.email is None or self.email == "":
             self.email = "" + self.get_student_code() + "@gm.uit.edu.vn"
         self.last_name = ""
-        if self.username is None:
+        if self.username is None or self.username == "":
             self.username = "" + self.student_code
-        if self.username == "":
-            self.username = "" + self.student_code
-        if self.password is None:
+        if self.password is None or self.password == "":
             self.password = "" + self.student_code
         self.set_password(self.password)
         super(Student, self).save(*args, **kwargs)

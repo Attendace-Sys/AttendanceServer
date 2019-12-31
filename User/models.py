@@ -1,6 +1,6 @@
 from django.db import models
 from guardian.shortcuts import assign_perm
-# Create your models here.
+from django.utils.translation import gettext_lazy as _
 import os
 from uuid import uuid4
 from django.urls import reverse
@@ -50,6 +50,8 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
+    # label = 'Student Name'
+    first_name = models.CharField(_('Full name'), max_length=30, blank=True)
     username = models.CharField(
         max_length=100,
         validators=[
@@ -91,9 +93,9 @@ class User(AbstractUser):
                     perm == 'course.add_attendance' or perm == 'course.change_attendance' or \
                     perm == 'course.delete_attendance' or perm == 'course.view_attendance' or \
                     perm == 'User.add_user' or perm == 'User.change_user' or \
-                    perm == 'User.delete_user' or perm == 'User.view_user' or \
-                    perm == 'teacher.add_teacher' or perm == 'teacher.change_teacher' or \
-                    perm == 'teacher.delete_teacher' or perm == 'teacher.view_teacher':
+                    perm == 'User.view_user' or \
+                    perm == 'teacher.change_teacher' or \
+                    perm == 'teacher.view_teacher':
                 return True
         if self.is_student:
             if perm == 'student.change_student' or perm == 'student.view_student' or \

@@ -34,9 +34,9 @@ class Teacher(User):
         self.is_teacher = True
         self.is_staff = True
         self.last_name = ""
-        if self.username is None:
+        if self.username is None or self.username == "":
             self.username = "" + self.teacher_code
-        if self.password is None:
+        if self.password is None or self.password == "":
             self.password = "" + self.teacher_code
         self.set_password(self.password)
         super(Teacher, self).save(*args, **kwargs)
