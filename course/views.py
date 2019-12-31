@@ -418,52 +418,51 @@ def preprocess_image(image_path):
 import time
 import os
 
+
 # load images and extract faces for all images in a directory
 def load_faces(directory):
     faces = list()
     paths = list()
+    list_all_files = sorted(listdir(directory))
+    list_img_files = []
+    for file in list_all_files:
+        if file.endswith('.jpg') or file.endswith('.JPG'):
+            list_img_files.append(file)
 
-  list_all_files = sorted(listdir(directory))
-  list_img_files = []
-  for file in list_all_files:
-      if file.endswith('.jpg') or file.endswith('.JPG'):
-          list_img_files.append(file)
-    
-  
-  for filename in list_img_files:
-    print(filename)
+    for filename in list_img_files:
+        print(filename)
 
         path = directory + filename
-    print(path)
-    fname, _ = os.path.splitext(filename)
+        print(path)
+        fname, _ = os.path.splitext(filename)
 
-    numpy_vector_path = directory + fname
-    print(numpy_vector_path)
-    numpy_ext = ".npy"
+        numpy_vector_path = directory + fname
+        print(numpy_vector_path)
+        numpy_ext = ".npy"
 
-    if os.path.isfile(numpy_vector_path + numpy_ext):
-        # get pre-caculated vector of face image
-        img_vector = np.load(numpy_vector_path + numpy_ext)
-    else:
-        # get face
-        #start_time = time.time()
-        img = preprocess_image(path)
+        if os.path.isfile(numpy_vector_path + numpy_ext):
+            # get pre-caculated vector of face image
+            img_vector = np.load(numpy_vector_path + numpy_ext)
+        else:
+            # get face
+            # start_time = time.time()
+            img = preprocess_image(path)
 
-        try:
-        #(top, right, bottom, left)
-            img_vector = face_recognition.face_encodings(img, known_face_locations=[(0,160,160,0)])[0]
-            #---> array [[128-d vector for face 1], [128-d vector for face 2], ....]
-            # print("extract 1 img vector--- %s seconds ---" % (time.time() - start_time))
-            
-            # save img_vector to use later
-            np.save(numpy_vector_path, img_vector)
+            try:
+                # (top, right, bottom, left)
+                img_vector = face_recognition.face_encodings(img, known_face_locations=[(0, 160, 160, 0)])[0]
+                # ---> array [[128-d vector for face 1], [128-d vector for face 2], ....]
+                # print("extract 1 img vector--- %s seconds ---" % (time.time() - start_time))
 
-            if len(paths) == 0:
-                paths.append(path)
-        except IndexError:
-            pass
+                # save img_vector to use later
+                np.save(numpy_vector_path, img_vector)
 
-    faces.append(img_vector)
+                if len(paths) == 0:
+                    paths.append(path)
+            except IndexError:
+                pass
+
+        faces.append(img_vector)
     return (faces, paths)
 
 
@@ -549,7 +548,7 @@ def schedule_create(request, template_name='schedule_form.html'):
         COSIN_THREADHOLD = 0.06
         recognition_result = []
         # Threshold see: https://sefiks.com/2018/09/03/face-recognition-with-facenet-in-keras/
-        #https://medium.com/beesightsoft/build-your-own-face-recognition-using-face-recognition-library-and-k-nearest-neighbors-classifier-611ffc973d4b
+        # https://medium.com/beesightsoft/build-your-own-face-recognition-using-face-recognition-library-and-k-nearest-neighbors-classifier-611ffc973d4b
         for face_vector_list in list_of_list_face_vector_in_each_img:
             # face_vector_list: image vectors for faces in each image
             neigh_dist, neigh_ind = neigh.kneighbors(face_vector_list, n_neighbors=NUM_NEIGHBOR)
