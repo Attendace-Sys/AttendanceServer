@@ -96,7 +96,6 @@ def student_list(request, template_name='student_list.html'):
 @require_http_methods(["POST", "GET"])
 def student_create_or_update(request, student_code=None, template_name='student_form.html'):
     if student_code is None:
-        print("student code is None")
         form = StudentForms(request.POST or None, request.FILES or None)
         # begin
         if request.method == 'POST':
@@ -106,7 +105,6 @@ def student_create_or_update(request, student_code=None, template_name='student_
             except:
                 students = None
             if students is not None:
-                print("student is not None - call update 1-1")
                 # update object
                 if request.user.is_superuser:
                     student = get_object_or_404(Student, student_code=students)
@@ -118,7 +116,6 @@ def student_create_or_update(request, student_code=None, template_name='student_
                     return redirect('student:student_list')
                 return render(request, 'student_form.html', {'form': form})
             else:
-                print("student is not None - call create 1-2")
                 form = StudentForms(request.POST or None, request.FILES or None)
                 # create object
                 if form.is_valid():
@@ -149,7 +146,6 @@ def student_create(request, template_name='student_form.html'):
 
 @method_decorator(csrf_exempt, name='dispatch')
 def student_update(request, student_code, template_name='student_form.html'):
-    print(request.POST)
     if request.user.is_superuser:
         student = get_object_or_404(Student, student_code=student_code)
     else:

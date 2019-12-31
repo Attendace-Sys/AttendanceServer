@@ -594,6 +594,11 @@ def schedule_create(request, template_name='schedule_form.html'):
         print("response_str--- %s seconds ---" %
               (time.time() - start_time))
 
+        form = ScheduleForms(request.POST or None, request.FILES or None)
+        instance = super(ScheduleForms, form).save(commit)
+        for each in self.cleaned_data['files']:
+            ScheduleImagesData.objects.create(image_data=each, schedule=instance)
+
         return HttpResponse(response_str, content_type='application/json')
 
     else:

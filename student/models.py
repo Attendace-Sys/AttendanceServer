@@ -36,8 +36,8 @@ class Student(User):
     def get_student_code(self):
         return str(self.student_code)
 
-    def get_absolute_url(self):
-        return reverse('student:student_edit', kwargs={'student_code': self.student_code})
+    # def get_absolute_url(self):
+    #    return reverse('student:student_edit', kwargs={'student_code': self.student_code})
 
     def save(self, *args, **kwargs):
         # default username and password
@@ -90,7 +90,7 @@ class StudentImagesData(models.Model):
         filename = STUDENT_IMG_DIR + self.image_data.name
         filepath, ext = os.path.splitext(filename)
         if os.path.isfile(filepath + npy) is False:
-            if os.path.isfile(filename) is False:
+            if os.path.isfile(filename):
                 img = preprocess_image(filename)
             try:
                 img_vector = face_recognition.face_encodings(img, known_face_locations=[(0, 160, 160, 0)])[0]
