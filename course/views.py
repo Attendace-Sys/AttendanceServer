@@ -430,14 +430,11 @@ def load_faces(directory):
             list_img_files.append(file)
 
     for filename in list_img_files:
-        print(filename)
 
         path = directory + filename
-        print(path)
         fname, _ = os.path.splitext(filename)
 
         numpy_vector_path = directory + fname
-        print(numpy_vector_path)
         numpy_ext = ".npy"
 
         if os.path.isfile(numpy_vector_path + numpy_ext):
@@ -530,7 +527,6 @@ def schedule_create(request, template_name='schedule_form.html'):
                                           'score': 100}
 
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        print("bass_dir " + BASE_DIR)
         STUDENT_IMG_DIR = BASE_DIR + '/media/students/'
 
         # build vectors for all faces in classroom images

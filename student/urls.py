@@ -14,6 +14,6 @@ urlpatterns = [
     path('serializer/', include(router.urls)),
     path('list/', views.student_list, name='student_list'),
     path('new/', views.student_create_or_update, name='student_new'),
-    path('edit/<int:student_code>/', views.student_create_or_update, name='student_edit'),
+    path('edit/<int:student_code>/', views.student_update, name='student_edit'),
     path('delete/<int:student_code>/', views.student_delete, name='student_delete'),
 ]
