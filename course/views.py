@@ -409,33 +409,54 @@ def preprocess_image(image_path):
     return np.array(img)
  
 import time
+import os
+
 # load images and extract faces for all images in a directory
 def load_faces(directory):
   faces = list()
   paths = list()
-  # enumerate files
-  for filename in sorted(listdir(directory)):
+
+  list_all_files = sorted(listdir(directory))
+  list_img_files = []
+  for file in list_all_files:
+      if file.endswith('.jpg') or file.endswith('.JPG'):
+          list_img_files.append(file)
+    
+  
+  for filename in list_img_files:
+    print(filename)
+
     path = directory + filename
-    # print(path)
-	  # get face
-    start_time = time.time()
-    img = preprocess_image(path)
+    print(path)
+    fname, _ = os.path.splitext(filename)
 
-    try:
-      #(top, right, bottom, left)
+    numpy_vector_path = directory + fname
+    print(numpy_vector_path)
+    numpy_ext = ".npy"
 
-      img_vector = face_recognition.face_encodings(img, known_face_locations=[(0,160,160,0)])[0]
-      #---> array [[128-d vector for face 1], [128-d vector for face 2], ....]
-      print("extract 1 img vector--- %s seconds ---" % (time.time() - start_time))
+    if os.path.isfile(numpy_vector_path + numpy_ext):
+        # get pre-caculated vector of face image
+        img_vector = np.load(numpy_vector_path + numpy_ext)
+    else:
+        # get face
+        #start_time = time.time()
+        img = preprocess_image(path)
 
-      faces.append(img_vector)
+        try:
+        #(top, right, bottom, left)
+            img_vector = face_recognition.face_encodings(img, known_face_locations=[(0,160,160,0)])[0]
+            #---> array [[128-d vector for face 1], [128-d vector for face 2], ....]
+            # print("extract 1 img vector--- %s seconds ---" % (time.time() - start_time))
+            
+            # save img_vector to use later
+            np.save(numpy_vector_path, img_vector)
 
-      if len(paths) == 0:
-        paths.append(path)
-    except IndexError:
-      #print(path)
-      pass
+            if len(paths) == 0:
+                paths.append(path)
+        except IndexError:
+            pass
 
+    faces.append(img_vector)
   return (faces, paths)
 
 def load_student_trainX_trainY(list_student, STUDENT_IMG_DIR):
@@ -499,6 +520,7 @@ def schedule_create(request, template_name='schedule_form.html'):
             student_dict[student_code] = {'student_code':student_code, 'name': student_name, 'recognized': 0, 'score': 100}
 
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        print("bass_dir " + BASE_DIR)
         STUDENT_IMG_DIR = BASE_DIR + '/media/students/'
 
         # build vectors for all faces in classroom images
@@ -514,9 +536,10 @@ def schedule_create(request, template_name='schedule_form.html'):
         # for revert
         train_Y_arr = np.array(trainY)
         
-        COSIN_THREADHOLD = 0.6
+        COSIN_THREADHOLD = 0.06
         recognition_result = []
         # Threshold see: https://sefiks.com/2018/09/03/face-recognition-with-facenet-in-keras/
+        #https://medium.com/beesightsoft/build-your-own-face-recognition-using-face-recognition-library-and-k-nearest-neighbors-classifier-611ffc973d4b
         for face_vector_list in list_of_list_face_vector_in_each_img:    
             #face_vector_list: image vectors for faces in each image
             neigh_dist, neigh_ind = neigh.kneighbors(face_vector_list, n_neighbors=NUM_NEIGHBOR)
