@@ -1,8 +1,13 @@
 from django.db import models
 from User.models import User
 import os
+from keras.preprocessing.image import load_img, save_img, img_to_array
 from django.urls import reverse
 from django.conf import settings
+import numpy as np
+import face_recognition
+from keras.preprocessing.image import load_img
+import random
 
 
 # -*- coding: utf-8 -*-
@@ -38,17 +43,23 @@ class Student(User):
         # default username and password
         self.is_student = True
         self.is_staff = True
-        self.email = "" + self.get_student_code() + "@gm.uit.edu.vn"
+        if self.email == "":
+            self.email = "" + self.get_student_code() + "@gm.uit.edu.vn"
         self.last_name = ""
         if self.username == "":
             self.username = "" + str(self.student_code)
         if self.password == "":
             self.password = "" + str(self.student_code)
-        self.set_password(str(self.student_code))
+        self.set_password(self.password)
         super(Student, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = 'Quản lý học sinh'
+
+
+def preprocess_image(image_path):
+    img = load_img(image_path, target_size=(160, 160))
+    return np.array(img)
 
 
 class StudentImagesData(models.Model):
@@ -70,14 +81,24 @@ class StudentImagesData(models.Model):
     image_data = models.FileField(upload_to=path_and_rename, blank=False, null=False)
     image_date_upload = models.DateTimeField(auto_now_add=True, null=True)
 
-    def convert_image_to_text(self):
-        return "abcxyz"
-
-    image_vector = models.TextField(default="", blank=False, null=False)
+    def convert_image_to_text(self, *args, **kwargs):
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        npy = ".npy"
+        STUDENT_IMG_DIR = BASE_DIR + '/media/'
+        filename = STUDENT_IMG_DIR + self.image_data.name
+        filepath, ext = os.path.splitext(filename)
+        if os.path.isfile(filepath + npy) is False:
+            if os.path.isfile(filename) is False:
+                img = preprocess_image(filename)
+            try:
+                img_vector = face_recognition.face_encodings(img, known_face_locations=[(0, 160, 160, 0)])[0]
+                np.save(filepath, img_vector)
+            except:
+                pass
 
     def save(self, *args, **kwargs):
-        self.image_vector = convert_image_to_text
         super(StudentImagesData, self).save(*args, **kwargs)
+        self.convert_image_to_text(self, *args, **kwargs)
 
     def __str__(self):
         return self.image_data.name

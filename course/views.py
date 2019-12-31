@@ -103,6 +103,7 @@ class CourseListViewAPI(generics.ListAPIView,
     def delete(self, request, course_code=None):
         return self.destroy(request, id)
 
+
 # def get_queryset(self, type, code):
 #    user = self.request.user
 #    return user.accounts.all()
@@ -327,33 +328,35 @@ class ListStudentOfCourseViewAPI(APIView):
 
     def get(self, request, course_code=None):
         if course_code:
-            list_student = Course.objects.filter(course_code = course_code).values('students__student_code', 'students__first_name')
-            # list_student = Course.objects.filter(course_code = course_code).annotate(student_code = 'students__student_code', student_name'students__first_name')
-
+            list_student = Course.objects.filter(course_code=course_code).values('students__student_code',
+                                                                                 'students__first_name')
+            # list_student = Course.objects.filter(course_code = course_code).annotate(student_code =
+            # 'students__student_code', student_name'students__first_name')
 
             # list_schedule = Schedule.objects.filter(course = course_code).values('schedule_code'))
-            list_schedule = list(Schedule.objects.filter(course = course_code).values_list('schedule_code'))
-            
+            list_schedule = list(Schedule.objects.filter(course=course_code).values_list('schedule_code'))
+
             list_schedule_code = []
-            for item in list_schedule:               
+            for item in list_schedule:
                 list_schedule_code.append(item[0])
             # print(list_schedule_code)
-        
+
             index = 0
             for student in list_student:
                 num_present = 0;
                 num_absent = 0;
-                list_attendance = Attendance.objects.filter(student = student.get('students__student_code')).filter(schedule_code__in=list_schedule_code).values_list('absent_status')
+                list_attendance = Attendance.objects.filter(student=student.get('students__student_code')).filter(
+                    schedule_code__in=list_schedule_code).values_list('absent_status')
                 for item in list_attendance:
                     if (item[0] == True):
                         num_present = num_present + 1
                     else:
                         num_absent = num_absent + 1
-                             
+
                 list_student[index].update({'num_present': num_present})
                 list_student[index].update({'num_absent': num_absent})
 
-                index = index +  1
+                index = index + 1
 
             return Response({'attends': list_student}, status=200)
         else:
@@ -362,6 +365,8 @@ class ListStudentOfCourseViewAPI(APIView):
 
 # API Get data  And do Face Recognition
 from io import BytesIO
+
+
 def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_json_data):
     required_size = (160, 160)
 
@@ -379,13 +384,13 @@ def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_j
         for rect in list_face_rect_in_img:
             x1 = rect['left']
             x2 = rect['right']
-            y1= rect['top']
+            y1 = rect['top']
             y2 = rect['bottom']
-            box =(x1, y1, x2, y2)
-            #print(box)
+            box = (x1, y1, x2, y2)
+            # print(box)
             resized_img = test_image.crop(box)
             resized_img = resized_img.resize(required_size, Image.ANTIALIAS)
-            
+
             temp_file = BytesIO()
             resized_img.save(temp_file, format="jpeg")
             temp_file.name = 'test.jpg'
@@ -393,7 +398,7 @@ def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_j
             restored_img = Image.open(temp_file)
             restored_img = np.array(restored_img)
             try:
-                img_vector = face_recognition.face_encodings(restored_img, known_face_locations=[(0,160,160,0)])[0]
+                img_vector = face_recognition.face_encodings(restored_img, known_face_locations=[(0, 160, 160, 0)])[0]
             except IndexError:
                 img_vector = np.zeros(128)
                 pass
@@ -404,39 +409,44 @@ def get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data, m_j
 
     return list_of_list_face_in_each_img
 
+
 def preprocess_image(image_path):
     img = load_img(image_path, target_size=(160, 160))
     return np.array(img)
- 
+
+
 import time
+
+
 # load images and extract faces for all images in a directory
 def load_faces(directory):
-  faces = list()
-  paths = list()
-  # enumerate files
-  for filename in sorted(listdir(directory)):
-    path = directory + filename
-    # print(path)
-	  # get face
-    start_time = time.time()
-    img = preprocess_image(path)
+    faces = list()
+    paths = list()
+    # enumerate files
+    for filename in sorted(listdir(directory)):
+        path = directory + filename
+        # print(path)
+        # get face
+        start_time = time.time()
+        img = preprocess_image(path)
 
-    try:
-      #(top, right, bottom, left)
+        try:
+            # (top, right, bottom, left)
 
-      img_vector = face_recognition.face_encodings(img, known_face_locations=[(0,160,160,0)])[0]
-      #---> array [[128-d vector for face 1], [128-d vector for face 2], ....]
-      print("extract 1 img vector--- %s seconds ---" % (time.time() - start_time))
+            img_vector = face_recognition.face_encodings(img, known_face_locations=[(0, 160, 160, 0)])[0]
+            # ---> array [[128-d vector for face 1], [128-d vector for face 2], ....]
+            print("extract 1 img vector--- %s seconds ---" % (time.time() - start_time))
 
-      faces.append(img_vector)
+            faces.append(img_vector)
 
-      if len(paths) == 0:
-        paths.append(path)
-    except IndexError:
-      #print(path)
-      pass
+            if len(paths) == 0:
+                paths.append(path)
+        except IndexError:
+            # print(path)
+            pass
 
-  return (faces, paths)
+    return (faces, paths)
+
 
 def load_student_trainX_trainY(list_student, STUDENT_IMG_DIR):
     train_X = []
@@ -460,7 +470,9 @@ def load_student_trainX_trainY(list_student, STUDENT_IMG_DIR):
 
     return train_X, train_Y
 
+
 import json
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 @require_http_methods(["POST"])
@@ -476,7 +488,7 @@ def schedule_create(request, template_name='schedule_form.html'):
         m_json_data = json.loads(m_json_str)
 
         print(m_json_data)
-    
+
         # class room images
         in_memory_uploaded_file_data = request.FILES.getlist('files')
 
@@ -484,7 +496,7 @@ def schedule_create(request, template_name='schedule_form.html'):
         list_of_list_face_vector_in_each_img = get_list_of_list_face_vector_in_class_imgs(in_memory_uploaded_file_data,
                                                                                           m_json_data)
         print(np.shape(list_of_list_face_vector_in_each_img))
-         
+
         print("get_list_of_list_face_vector_in_class_imgs--- %s seconds ---" % (time.time() - start_time))
 
         # get all list stutdent in class
@@ -496,7 +508,8 @@ def schedule_create(request, template_name='schedule_form.html'):
         for student in list_student:
             student_code = student.student_code
             student_name = student.first_name
-            student_dict[student_code] = {'student_code':student_code, 'name': student_name, 'recognized': 0, 'score': 100}
+            student_dict[student_code] = {'student_code': student_code, 'name': student_name, 'recognized': 0,
+                                          'score': 100}
 
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         STUDENT_IMG_DIR = BASE_DIR + '/media/students/'
@@ -506,35 +519,34 @@ def schedule_create(request, template_name='schedule_form.html'):
 
         print("load_student_trainX_trainY--- %s seconds ---" % (time.time() - start_time))
 
-
         NUM_NEIGHBOR = 1
         neigh = NearestNeighbors(n_neighbors=NUM_NEIGHBOR, metric='cosine')
         neigh.fit(trainX)
 
         # for revert
         train_Y_arr = np.array(trainY)
-        
+
         COSIN_THREADHOLD = 0.6
         recognition_result = []
         # Threshold see: https://sefiks.com/2018/09/03/face-recognition-with-facenet-in-keras/
-        for face_vector_list in list_of_list_face_vector_in_each_img:    
-            #face_vector_list: image vectors for faces in each image
+        for face_vector_list in list_of_list_face_vector_in_each_img:
+            # face_vector_list: image vectors for faces in each image
             neigh_dist, neigh_ind = neigh.kneighbors(face_vector_list, n_neighbors=NUM_NEIGHBOR)
 
-            #print(neigh_dist)
-            #print(neigh_ind)
+            # print(neigh_dist)
+            # print(neigh_ind)
 
             recognized_labels = train_Y_arr[neigh_ind].flatten().tolist()
             # filter unrecognized faces if distances surpass threadhold
             for i in range(len(recognized_labels)):
-                if(neigh_dist[i] > COSIN_THREADHOLD):
+                if (neigh_dist[i] > COSIN_THREADHOLD):
                     recognized_labels[i] = 'unknown'
 
             scores = neigh_dist.flatten().tolist()
             labels_and_scores = (recognized_labels, scores)
             recognition_result.append(labels_and_scores)
 
-        print(recognition_result)        
+        print(recognition_result)
         for i, image_info in enumerate(m_json_data):
             face_rect = image_info['face_rect']
             response_labels = recognition_result[i][0]
@@ -547,25 +559,25 @@ def schedule_create(request, template_name='schedule_form.html'):
                 detected_student_score = face['score']
 
                 if detected_student_id in student_dict:
-                        personal_dict = student_dict[detected_student_id]
-                        personal_dict['recognized'] = 1
-                        face['name'] = personal_dict['name']
-                        if personal_dict['score'] > detected_student_score:
-                            personal_dict['score'] = detected_student_score
+                    personal_dict = student_dict[detected_student_id]
+                    personal_dict['recognized'] = 1
+                    face['name'] = personal_dict['name']
+                    if personal_dict['score'] > detected_student_score:
+                        personal_dict['score'] = detected_student_score
                 else:
                     face['name'] = 'unknown'
-        
-        list_student_with_recognition_info = list(student_dict.values())
-        list_student_with_recognition_info = sorted(list_student_with_recognition_info, key = lambda i: i['score'])
 
-        json_response = {'list_student': list_student_with_recognition_info, 'json_response_for_uploaded_images': m_json_data}
+        list_student_with_recognition_info = list(student_dict.values())
+        list_student_with_recognition_info = sorted(list_student_with_recognition_info, key=lambda i: i['score'])
+
+        json_response = {'list_student': list_student_with_recognition_info,
+                         'json_response_for_uploaded_images': m_json_data}
 
         response_str = json.dumps(json_response)
         print(response_str)
         print("response_str--- %s seconds ---" %
               (time.time() - start_time))
 
-        
         return HttpResponse(response_str, content_type='application/json')
 
     else:
@@ -592,5 +604,3 @@ class ScheduleImagesDataView(viewsets.ModelViewSet):
 class ScheduleSerializerView(viewsets.ModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
-
-
