@@ -8,7 +8,7 @@ from guardian.shortcuts import assign_perm
 # Create your models here.
 class Teacher(User):
     teacher_code = models.CharField(max_length=20, null=False, primary_key=True)
-    teacher_image = models.ImageField(upload_to='teachers/images', null=True)
+    teacher_image = models.ImageField(upload_to='teachers/images', null=True, blank=True)
 
     # def get_absolute_url(self):
     #    return reverse('teacher:teacher_edit', kwargs={'teacher_code': self.teacher_code})
@@ -33,6 +33,8 @@ class Teacher(User):
         # default username and password
         self.is_teacher = True
         self.is_staff = True
+        if self.teacher_image is None:
+            self.teacher_image = ""
         self.last_name = ""
         if self.username is None or self.username == "":
             self.username = "" + self.teacher_code

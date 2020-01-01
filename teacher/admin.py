@@ -28,22 +28,22 @@ class ImageInline(admin.TabularInline):
 
 
 class TeacherAdmin(ImportExportModelAdmin):
-    list_display = ('teacher_code', 'get_full_name', 'email', 'date_joined', 'teacher_image_show',
+    list_display = ('teacher_code', 'get_full_name', 'email', 'date_joined',
                     'days_since_creation', 'is_staff', 'is_superuser', )
     search_fields = ('teacher_code',)
     date_created = 'date_joined'
     list_per_page = 10
     actions = ['delete_media', ]
-    readonly_fields = ['date_joined', 'days_since_creation', 'teacher_full_image_show', 'password']
+    readonly_fields = ['date_joined', 'days_since_creation', 'password']
 
     fieldsets = (
         (None, {
             'fields': (
-                'teacher_code', 'password', 'first_name', 'email', 'teacher_image',
+                'teacher_code', 'password', 'first_name', 'email',
                 ),
         }),
         ('Advance options', {
-            'fields': ('date_joined', 'teacher_full_image_show'),
+            'fields': ('date_joined', 'teacher_image'),
             'description': 'option advance',
             'classes': ('',),
             # colapse

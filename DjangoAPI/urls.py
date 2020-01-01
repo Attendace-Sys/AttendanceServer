@@ -25,14 +25,13 @@ from User import views
 
 # from User.views import (LoginView, LogoutView)
 
-admin.site.site_header = 'Trang Web Admin'
-admin.site.site_title = 'Django Admin page'
-admin.site.index_title = 'Django Admin page'
+admin.site.site_header = 'Hệ thống điểm danh'
+admin.site.site_title = 'Hệ thống điểm danh'
+admin.site.index_title = 'Hệ thống điểm danh'
 
 router = routers.DefaultRouter()
 urlpatterns = [
-                  url(r'^$', views.index, name='index'),
-                  path('admin/', admin.site.urls, name='admin'),
+                  path('', admin.site.urls, name='admin'),
                   path('teachers/', include('teacher.urls')),
                   path('students/', include('student.urls')),
                   path('courses/', include('course.urls')),

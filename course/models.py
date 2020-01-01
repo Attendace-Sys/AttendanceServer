@@ -7,6 +7,7 @@ from datetime import timedelta
 from DjangoAPI import settings
 from django.shortcuts import render, redirect, get_object_or_404
 
+
 # Create your models here.
 
 class Course(models.Model):
@@ -99,8 +100,6 @@ class Course(models.Model):
         day_begin = self.start_day
         day_end = self.end_day
         day_of_week = int(self.day_of_week)
-        time_start_of_course = self.time_start_of_course
-        time_duration = self.time_duration
         date = day_begin
         if date.weekday() <= day_of_week:
             date = date + timedelta(days=(day_of_week - date.weekday()))
@@ -121,9 +120,10 @@ class Course(models.Model):
             schedule = Schedule(course=self)
             schedule.schedule_code = \
                 self.course_code + "-" + str(schedule_number_of_day_count)
-            schedule.date_schedule = date_schedule
             schedule.schedule_number_of_day = schedule_number_of_day_count
             schedule_number_of_day_count = schedule_number_of_day_count + 1
+            schedule.schedule_date = date_schedule
+            print(schedule.schedule_date)
             if schedule.schedule_date is None:
                 schedule.schedule_date = date_schedule
             schedule.save()
@@ -132,18 +132,12 @@ class Course(models.Model):
 
     def save(self, *args, **kwargs):
         instance = super(Course, self).save(*args, **kwargs)
-        if self.pk:
+        schedule = Schedule.objects.filter(course=self.course_code)
+        if schedule is not None or schedule != "":
             # do when create
             if self.start_day is not None and self.end_day is not None and (self.start_day <= self.end_day):
                 self.create_schedule(self, *args, **kwargs)
         return instance
-
-    def __init__(self, *args, **kwargs):
-        super(Course, self).__init__(*args, **kwargs)
-        schedule = Schedule.objects.filter(course=self.course_code)
-        if schedule is None:
-            if self.start_day is not None and self.end_day is not None and (self.start_day <= self.end_day):
-                self.create_schedule(*args, **kwargs)
 
     def __str__(self):
         return self.course_name
@@ -155,7 +149,7 @@ class Course(models.Model):
 class Schedule(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
     schedule_code = models.CharField(max_length=30, null=False, primary_key=True)
-    schedule_date = models.DateField(auto_now_add=True, null=True)
+    schedule_date = models.DateField(null=True, blank=True)
     schedule_number_of_day = models.IntegerField(null=False)
 
     class Meta:

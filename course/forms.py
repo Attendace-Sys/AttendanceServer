@@ -13,6 +13,7 @@ class ScheduleForms(forms.ModelForm):
     json_data = forms.CharField(max_length=1024, required=False)
     schedule_code = forms.CharField(required=False)
     schedule_number_of_day = forms.IntegerField(required=False)
+    schedule_date = forms.DateField(required=False)
 
     class Meta:
         model = Schedule

@@ -73,7 +73,7 @@ class CourseAdmin(ImportExportModelAdmin):
     list_display = (
         'course_code', 'course_name', 'children_display', 'start_day', 'end_day', 'teacher', 'student_count',
         'day_of_week', 'time_start_of_course', 'duaration',)
-    search_fields = ('course_code',)
+    search_fields = ('course_code', 'course_name',)
     fieldsets = (
         (None, {
             'fields': ('course_code', 'course_name', 'start_day', 'end_day', 'teacher', 'day_of_week',
@@ -305,7 +305,7 @@ class ScheduleAdmin(admin.ModelAdmin):
             'fields': ('course', 'schedule_number_of_day')
         }),
     )
-    search_fields = ('course',)
+    search_fields = ('schedule_code', 'schedule_number_of_day' )
     readonly_fields = ['schedule_code', 'course', 'schedule_date', 'schedule_number_of_day']
     # filter_horizontal = ('students',)
     list_filter = (
@@ -359,7 +359,7 @@ class AttendanceChoiceField(forms.ModelChoiceField):
 class AttendanceAdmin(admin.ModelAdmin):
     list_display = ('course_info', 'attendance_code', 'student_info', 'schedule_code', 'date', 'absent_status',
                     'image_data',)
-    search_fields = ('attendance_code',)
+    search_fields = ('attendance_code', 'absent_status')
 
     fieldsets = (
         (None, {

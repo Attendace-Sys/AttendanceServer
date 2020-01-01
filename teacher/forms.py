@@ -7,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
 class TeacherForm(ModelForm):
-
+    teacher_image = forms.ImageField(required=False)
 
     class Meta:
         model = Teacher
@@ -20,13 +20,14 @@ class TeacherForm(ModelForm):
 
 
 class TeacherFormCreationForm(UserCreationForm):
-
+    teacher_image = forms.ImageField(required=False)
     class Meta:
         model = Teacher
         fields = ('teacher_code', 'first_name', 'email')
 
 
 class TeacherFormChangeForm(UserChangeForm):
+    teacher_image = forms.ImageField(required=False)
     class Meta:
         model = Teacher
         fields = ('teacher_code', 'first_name', 'email')
