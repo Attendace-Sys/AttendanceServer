@@ -57,6 +57,11 @@ class StudentsResource(resources.ModelResource):
         report_skipped = False
 
     def import_row(self, row, instance_loader, using_transactions=True, dry_run=False, **kwargs):
+        try:
+            row['student_code'] = str(row['student_code'])
+        except:
+            pass
+        row['email'] = row['student_code'] + "@gm.uit.edu.vn"
         row_result = self.get_row_result_class()()
         try:
             self.before_import_row(row, **kwargs)
@@ -68,6 +73,9 @@ class StudentsResource(resources.ModelResource):
                 row_result.import_type = RowResult.IMPORT_TYPE_UPDATE
             row_result.new_record = new
             original = deepcopy(instance)
+            # print("Get instance ----------------------------------------")
+            # print(row)
+            print(dry_run)
             diff = self.get_diff_class()(self, original, new)
             if self.for_delete(row, instance):
                 if new:

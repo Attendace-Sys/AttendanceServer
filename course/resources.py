@@ -69,6 +69,68 @@ class CoursesResource(resources.ModelResource):
         skip_unchanged = True
         report_skipped = False
 
+    def import_row(self, row, instance_loader, using_transactions=True, dry_run=False, **kwargs):
+        try:
+            row['student_code'] = str(row['student_code'])
+        except:
+            pass
+        row_result = self.get_row_result_class()()
+        try:
+            self.before_import_row(row, **kwargs)
+            instance, new = self.get_or_init_instance(instance_loader, row)
+            self.after_import_instance(instance, new, **kwargs)
+            if new:
+                row_result.import_type = RowResult.IMPORT_TYPE_NEW
+            else:
+                row_result.import_type = RowResult.IMPORT_TYPE_UPDATE
+            row_result.new_record = new
+            original = deepcopy(instance)
+            # print("Get instance ----------------------------------------")
+            # print(row)
+            print(dry_run)
+            diff = self.get_diff_class()(self, original, new)
+            if self.for_delete(row, instance):
+                if new:
+                    row_result.import_type = RowResult.IMPORT_TYPE_SKIP
+                    diff.compare_with(self, None, dry_run)
+                else:
+                    row_result.import_type = RowResult.IMPORT_TYPE_DELETE
+                    self.delete_instance(instance, using_transactions, dry_run)
+                    diff.compare_with(self, None, dry_run)
+            else:
+                import_validation_errors = {}
+                try:
+                    self.import_obj(instance, row, dry_run)
+                except ValidationError as e:
+                    # Validation errors from import_obj() are passed on to
+                    # validate_instance(), where they can be combined with model
+                    # instance validation errors if necessary
+                    import_validation_errors = e.update_error_dict(import_validation_errors)
+                if self.skip_row(instance, original):
+                    row_result.import_type = RowResult.IMPORT_TYPE_SKIP
+                else:
+                    self.validate_instance(instance, import_validation_errors)
+                    self.save_instance(instance, using_transactions, dry_run)
+                    self.save_m2m(instance, row, using_transactions, dry_run)
+                    # Add object info to RowResult for LogEntry
+                    row_result.object_id = instance.pk
+                    row_result.object_repr = force_text(instance)
+                diff.compare_with(self, instance, dry_run)
+
+            row_result.diff = diff.as_html()
+            self.after_import_row(row, row_result, **kwargs)
+
+        except ValidationError as e:
+            row_result.import_type = RowResult.IMPORT_TYPE_INVALID
+            row_result.validation_error = e
+        except Exception as e:
+            row_result.import_type = RowResult.IMPORT_TYPE_ERROR
+            if not isinstance(e, TransactionManagementError):
+                logger.debug(e, exc_info=e)
+            tb_info = traceback.format_exc()
+            row_result.errors.append(self.get_error_result_class()(e, tb_info, row))
+        return row_result
+
     def import_data(self, dataset, dry_run=False, raise_errors=False,
                     use_transactions=None, collect_failed_rows=False, **kwargs):
         """

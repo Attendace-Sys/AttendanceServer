@@ -60,6 +60,7 @@ from import_export.resources import ModelResource
 from student.models import Student
 from student.admin import StudentAdmin
 import json
+from django.db.models import Q, F
 
 
 # Register your models here.
@@ -145,28 +146,105 @@ class CourseAdmin(ImportExportModelAdmin):
 
     student_count.admin_order_field = 'student_count'
 
-    actions = ["export_as_csv"]
+    actions = ["export_as_csv_by_course", "export_as_csv_by_student"]
 
     @staticmethod
     def set_csv_file_name():
         return 'Courses'
 
-    def export_as_csv(self, request, queryset):
+    def export_as_csv_by_course(self, request, queryset):
         # noinspection PyProtectedMember
         meta = self.model._meta
         field_names = [field.name for field in meta.fields]
         name = self.set_csv_file_name()
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={0}.csv'.format(name)
+        file_name = 'filename={0}.csv'.format(name)
+        response.write(u'\ufeff'.encode('utf8'))
         writer = csv.writer(response)
-        writer.writerow(['Ma mon hoc', 'Ten mon hoc', 'Ngay bat dau', 'Ngay ket thuc', 'Giao vien phu trach',
-                         'Buoi hoc', 'Tiet bat dau', 'Duration'])
+
+        writer.writerow(['Thông tin môn học'])
+        writer.writerow(
+            ['Mã môn học', 'Tên môn học', 'Phòng học', 'Ngày bắt đầu', 'Ngày kết thúc', 'Giáo viên giản dạy',
+             'Ngày học trong tuần (Thứ)', 'Tiết bắt đầu (Tiết)', 'Thời gian học (Số tiết học)'])
+        # writer.writerow(field_names)
         for obj in queryset:
             row = writer.writerow([getattr(obj, field) for field in field_names])
+            student_count = Course.objects.all().filter(course_code=getattr(obj, 'course_code')).values('students').count()
+            total = Schedule.objects.all().filter(course__course_code=getattr(obj, 'course_code')).count()
+            str_total = "Tổng số buổi: " + str(total) + " Tổng số sinh viên: " + str(student_count)
+            writer.writerow([str_total])
+            writer.writerow("")
+            writer.writerow(['Tên môn học', 'Mã môn học', 'Mã sinh viên', 'Tên sinh viên', 'Ngày học', 'Buổi học', 'Vắng'])
+
+            temp = Attendance.objects.filter(
+                schedule_code__course__course_code=getattr(obj, 'course_code')).all().values(
+                'schedule_code__course__course_code',
+                'schedule_code__course__course_name',
+                'schedule_code__schedule_date',
+                'schedule_code__schedule_number_of_day',
+                'student__first_name',
+                'student__student_code',
+                'absent_status'
+            ).values('schedule_code__course__course_name',
+                     'schedule_code__course__course_code',
+                     'student__student_code',
+                     'student__first_name',
+                     'schedule_code__schedule_date',
+                     'schedule_code__schedule_number_of_day',
+                     'absent_status',
+                     )
+            for data in temp:
+                writer.writerow(data.values())
 
         return response
 
-    export_as_csv.short_description = "Export Selected"
+    export_as_csv_by_course.short_description = "Export Selected course by course"
+
+    def export_as_csv_by_student(self, request, queryset):
+        # noinspection PyProtectedMember
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+        name = self.set_csv_file_name()
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={0}.csv'.format(name)
+        file_name = 'filename={0}.csv'.format(name)
+        response.write(u'\ufeff'.encode('utf8'))
+        writer = csv.writer(response)
+
+        writer.writerow(['Thông tin môn học'])
+        writer.writerow(
+            ['Mã môn học', 'Tên môn học', 'Phòng học', 'Ngày bắt đầu', 'Ngày kết thúc', 'Giáo viên giản dạy',
+             'Ngày học trong tuần (Thứ)', 'Tiết bắt đầu (Tiết)', 'Thời gian học (Số tiết học)'])
+        # writer.writerow(field_names)
+        for obj in queryset:
+            row = writer.writerow([getattr(obj, field) for field in field_names])
+            total = Schedule.objects.all().filter(course__course_code=getattr(obj, 'course_code')).count()
+            str_total = "Tổng số buổi: " + str(total)
+            writer.writerow([str_total])
+            writer.writerow(['Tên môn học', 'Mã môn học', 'Mã sinh viên', 'Tên sinh viên', 'Vắng'])
+
+            temp = Attendance.objects.filter(
+                schedule_code__course__course_code=getattr(obj, 'course_code')).all().values(
+                'schedule_code__course__course_code',
+                'schedule_code__course__course_name',
+                'student__first_name',
+                'student__student_code',
+                'absent_status'
+            ).values('schedule_code__course__course_name',
+                     'schedule_code__course__course_code',
+                     'student__student_code',
+                     'student__first_name',
+                     ).annotate(
+                total=Count('absent_status', filter=Q(absent_status=False))).order_by()
+            for data in temp:
+                writer.writerow(data.values())
+            # print(Attendance.objects.all().filter(schedule_code__course__course_code=getattr(obj,
+            # 'course_code')).values( 'schedule_code').annotate(total=Count('student')).order_by('total'))
+            print()
+        return response
+
+    export_as_csv_by_student.short_description = "Export Selected course by student"
 
     def write_to_tmp_storage(self, import_file, input_format):
         tmp_storage = self.get_tmp_storage_class()()
@@ -305,7 +383,7 @@ class ScheduleAdmin(admin.ModelAdmin):
             'fields': ('course', 'schedule_number_of_day')
         }),
     )
-    search_fields = ('schedule_code', 'schedule_number_of_day' )
+    search_fields = ('schedule_code', 'schedule_number_of_day')
     readonly_fields = ['schedule_code', 'course', 'schedule_date', 'schedule_number_of_day']
     # filter_horizontal = ('students',)
     list_filter = (
