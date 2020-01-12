@@ -1,10 +1,11 @@
 from django.apps import AppConfig
-from keras.models import load_model
+# from keras.models import load_model
 import os
 import sys
-import tensorflow as tf
-from keras.models import model_from_json
-from course.inception_resnet_v1 import *
+# import tensorflow as tf
+# from keras.models import model_from_json
+# from course.inception_resnet_v1 import *
+
 
 class CourseConfig(AppConfig):
     name = 'course'
@@ -28,5 +29,3 @@ class CourseConfig(AppConfig):
 
         # keras_model = load_model(BASE_DIR + '/course/facenet_keras.h5')
         graph = tf.get_default_graph()'''
-
-

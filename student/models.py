@@ -1,7 +1,7 @@
 from django.db import models
 from User.models import User
 import os
-from keras.preprocessing.image import load_img, save_img, img_to_array
+# from keras.preprocessing.image import load_img, save_img, img_to_array
 from django.urls import reverse
 from django.conf import settings
 import numpy as np

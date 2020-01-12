@@ -166,7 +166,7 @@ class Attendance(models.Model):
     attendance_code = models.CharField(max_length=50, null=False, primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
     schedule_code = models.ForeignKey(Schedule, on_delete=models.CASCADE, null=False)
-    absent_status = models.BooleanField(default=False)
+    absent_status = models.BooleanField(blank=True)
 
     # save to student_name folder
 
