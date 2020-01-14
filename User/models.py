@@ -99,7 +99,8 @@ class User(AbstractUser):
                 return True
         if self.is_student:
             if perm == 'student.change_student' or perm == 'student.view_student' or \
-                    perm == 'course.add_course' or perm == 'course.change_course' or \
+                    perm == 'User.add_user' or perm == 'User.change_user' or \
+                    perm == 'User.view_user' or \
                     perm == 'course.view_course' or perm == 'course.view_schedule' or \
                     perm == 'course.view_scheduleimagesdata' or perm == 'course.view_attendance':
                 return True

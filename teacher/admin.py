@@ -33,7 +33,6 @@ class TeacherAdmin(ImportExportModelAdmin):
     search_fields = ('teacher_code',)
     date_created = 'date_joined'
     list_per_page = 10
-    actions = ['delete_media', ]
     readonly_fields = ['date_joined', 'days_since_creation', 'password']
 
     fieldsets = (
@@ -104,12 +103,6 @@ class TeacherAdmin(ImportExportModelAdmin):
         if request.user.is_superuser:
             return 'teacher_code', 'first_name',
         return 'teacher_code',
-
-    def delete_media(self, request, queryset):
-        count = queryset.update(teacher_image=False)
-        self.message_user(request, '{} The selected name have been delete'.format(count))
-
-    delete_media.short_description = 'Delete image'
 
     def days_since_creation(self, teacher):
         diff = timezone.now().day - teacher.date_joined.day

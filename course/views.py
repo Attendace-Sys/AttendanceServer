@@ -28,19 +28,19 @@ from django.views.decorators.http import require_http_methods
 from PIL import Image
 import io
 import json
-# from keras.models import load_model
+from keras.models import load_model
 import os
 import course.apps as app
-# import keras
+import keras
 import numpy as np
 from random import choice
 from numpy import load
 from numpy import expand_dims
-# from sklearn.preprocessing import LabelEncoder
-# from sklearn.preprocessing import Normalizer
-# from sklearn.neighbors import NearestNeighbors
-# from course.label_encoder_ext import LabelEncoderExt
-# from django.utils.datastructures import MultiValueDict
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import Normalizer
+from sklearn.neighbors import NearestNeighbors
+from course.label_encoder_ext import LabelEncoderExt
+from django.utils.datastructures import MultiValueDict
 from numpy import asarray
 import json
 from PIL import ImageOps
@@ -48,23 +48,23 @@ import PIL
 from numpy import load
 from numpy import expand_dims
 from numpy import asarray
-# import tensorflow as tf
-# from sklearn import preprocessing
+import tensorflow as tf
+from sklearn import preprocessing
 import numpy as np
-# from keras.models import Model, Sequential
-# from keras.layers import Input, Convolution2D, ZeroPadding2D, MaxPooling2D, Flatten, Dense, Dropout, Activation
+from keras.models import Model, Sequential
+from keras.layers import Input, Convolution2D, ZeroPadding2D, MaxPooling2D, Flatten, Dense, Dropout, Activation
 from PIL import Image
-# from keras.preprocessing.image import load_img, save_img, img_to_array
-# from keras.applications.imagenet_utils import preprocess_input
-# from keras.preprocessing import image
-# from keras.models import model_from_json
+from keras.preprocessing.image import load_img, save_img, img_to_array
+from keras.applications.imagenet_utils import preprocess_input
+from keras.preprocessing import image
+from keras.models import model_from_json
 from os import listdir
-# from keras.applications.imagenet_utils import preprocess_input
+from keras.applications.imagenet_utils import preprocess_input
 from os import listdir
 from os.path import isdir
 import numpy as np
 import face_recognition
-# from keras.preprocessing.image import load_img
+from keras.preprocessing.image import load_img
 import random
 
 
