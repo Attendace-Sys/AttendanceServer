@@ -90,26 +90,13 @@ WSGI_APPLICATION = 'DjangoAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# 'default': {
-#     'ENGINE': 'django.db.backends.mysql',
-#     'NAME': 'mysqldatabase',
-#     'USER': 'nguyentanphatka@mysqldatabaseforserver',
-#     'PASSWORD': 'Linhkute123',
-#     'HOST': 'mysqldatabaseforserver.mysql.database.azure.com',
-#     'PORT': '3306',
-#     'use_unicode': True,
-#     'sql_mode': 'traditional',
-#     'character-set-server' : 'utf8mb4',
-#     'default-character-set' : 'utf8mb4',
-#     'OPTIONS': {
-#         'charset': 'utf8mb4',
-#     }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mysqldatabase',
         'USER': 'root',
-        'PASSWORD': 'Linhkute123',
+        'PASSWORD': 'Lethimylinh123',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
