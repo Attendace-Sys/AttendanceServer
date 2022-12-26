@@ -8,7 +8,7 @@ PyMySQL==0.9.3
 pytz==2019.3
 setuptools==42.0.1
 sqlparse==0.3.0
-wheel==0.33.6
+wheel==0.38.1
 django-filter==2.2.0
 django-summernote==0.8.11.4
 django-admin-list-filter-dropdown==1.0.3
